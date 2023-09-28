@@ -1,0 +1,10 @@
+
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+  application:
+    name: gulimall-member
+server:
+  port: 8050

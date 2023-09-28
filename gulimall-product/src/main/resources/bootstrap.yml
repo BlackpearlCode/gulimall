@@ -1,0 +1,13 @@
+spring:
+    cloud:
+        nacos:
+            config:
+                server-addr: localhost:8848
+                ext-config[0].data-id: datasource.yml
+                ext-config[0].group: DEFAULT_GROUP
+                #动态刷新配置
+                ext-config[0].refresh: true
+                namespace: 5434f5bc-d9a7-4ba3-bbb6-56279c8ad8c8
+            discovery:
+                server-addr: localhost:8848
+
