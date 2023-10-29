@@ -29,6 +29,7 @@
         <module>renren-fast</module>
         <module>gulimall-third-party</module>
         <module>gulimall-ware</module>
+        <module>gulimall-elasticsearch</module>
     </modules>
 
 </project>
