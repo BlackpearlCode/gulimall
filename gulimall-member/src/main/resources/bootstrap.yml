@@ -2,12 +2,12 @@ spring:
     cloud:
         nacos:
             config:
-                server-addr: localhost:8848
+                server-addr: 47.99.142.201:8848
                 ext-config[0].data-id: applliction.yml
                 ext-config[0].group: DEFAULT_GROUP
                 #动态刷新配置
                 ext-config[0].refresh: true
-                namespace: 3154dbd9-798f-496e-8c26-622213c5b320
+                namespace: 493e00c5-3003-4ec9-912f-3fa0aeebfa01
             discovery:
-                server-addr: localhost:8848
+                server-addr: 47.99.142.201:8848
 

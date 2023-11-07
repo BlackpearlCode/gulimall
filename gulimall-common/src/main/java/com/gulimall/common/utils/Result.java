@@ -6,8 +6,18 @@ import java.util.HashMap;
 
 
 
-public class Result extends HashMap<String, Object> {
+public class Result<T> extends HashMap<String, Object> {
     private static final long serialVersionUID = 1L;
+
+    private T data;
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
 
     public Result put(String key, Object value) {
         super.put(key, value);

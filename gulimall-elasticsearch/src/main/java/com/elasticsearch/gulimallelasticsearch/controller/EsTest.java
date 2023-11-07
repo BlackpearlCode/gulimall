@@ -31,7 +31,7 @@ public class EsTest {
     @RequestMapping("/test2")
     public String test() throws IOException, NoSuchFieldException {
         SearchResponse<Object> searchResponse = client.search(builder -> builder
-                        .index("test"),
+                        .index("test_query"),
                 Object.class);
         List<Hit<Object>> hits = searchResponse.hits().hits();
         List<Object > list=new LinkedList<>();

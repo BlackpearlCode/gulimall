@@ -26,4 +26,8 @@ public interface PmsSkuInfoService{
     void save(Long id, List<Skus> skus, PmsSpuInfo spuInfo);
 
     PageEntity getSkuInfo(Map<String, Object> params);
+
+    List<PmsSkuInfo> selectBySpuId(Long spuId);
+
+
 }

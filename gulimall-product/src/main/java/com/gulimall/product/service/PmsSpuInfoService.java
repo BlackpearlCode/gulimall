@@ -24,4 +24,6 @@ public interface PmsSpuInfoService{
     void saveSpuInfo(SpuInFo spu);
 
     PageEntity getAll(Map<String, Object>params);
+
+    void up(Long id);
 }

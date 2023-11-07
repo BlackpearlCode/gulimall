@@ -210,4 +210,8 @@
   <select id="selectAttrNameByAttrIdAndAttrType" resultMap="BaseResultMap">
     select * from pms_attr where attr_id=#{param1,jdbcType=BIGINT} and attr_type=#{param2}
   </select>
+
+  <select id="selectBySearchType" resultType="java.lang.Long">
+    select attr_id from pms_attr where search_type=#{type,jdbcType=BIGINT}
+    </select>
 </mapper>

@@ -2,7 +2,9 @@ package com.gulimallware.service;
 
 import com.gulimall.common.utils.PageEntity;
 import com.gulimallware.entity.WareSku;
+import com.gulimall.common.to.SkusHasStockVo;
 
+import java.util.List;
 import java.util.Map;
 
 public interface WareSkuService{
@@ -21,4 +23,7 @@ public interface WareSkuService{
     int updateByPrimaryKey(WareSku record);
 
     PageEntity getAll(Map<String, Object> params);
+
+
+    List<SkusHasStockVo> getSkusHasStock(List<Long> skuIds);
 }

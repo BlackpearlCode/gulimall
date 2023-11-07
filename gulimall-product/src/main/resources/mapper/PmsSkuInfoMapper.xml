@@ -183,4 +183,8 @@
       and price &lt;= #{params.max}
     </if>
     </select>
+
+  <select id="selectBySpuId" resultMap="BaseResultMap">
+    select * from pms_sku_info where spu_id=#{spuId,jdbcType=BIGINT}
+  </select>
 </mapper>

@@ -2,45 +2,62 @@ package com.gulimall.product.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.gulimall.common.to.SkusHasStockVo;
 import com.gulimall.common.to.SpuBoundTo;
 import com.gulimall.common.utils.PageEntity;
 import com.gulimall.common.constant.PublishStatusConstrant;
-import com.gulimall.product.entity.PmsSpuInfo;
-import com.gulimall.product.entity.PmsSpuInfoDesc;
+import com.gulimall.common.utils.Result;
+import com.gulimall.product.entity.*;
+import com.gulimall.product.es.SkuEsModel;
 import com.gulimall.product.feign.CouponFeignService;
+import com.gulimall.product.feign.WareFeignService;
 import com.gulimall.product.mapper.PmsSpuInfoMapper;
-import com.gulimall.product.service.PmsSpuInfoService;
+import com.gulimall.product.service.*;
 import com.gulimall.product.vo.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class PmsSpuInfoServiceImpl implements PmsSpuInfoService {
 
     @Resource
     private PmsSpuInfoMapper pmsSpuInfoMapper;
 
     @Resource
-    private PmsSpuInfoDescServiceImpl pmsSpuInfoDescService;
+    private PmsSpuInfoDescService pmsSpuInfoDescService;
 
     @Resource
-    private PmsSpuImagesServiceImpl pmsSpuImagesService;
+    private PmsSpuImagesService pmsSpuImagesService;
 
     @Resource
-    private PmsProductAttrValueServiceImpl productAttrValueService;
+    private PmsProductAttrValueService productAttrValueService;
 
     @Autowired
     private CouponFeignService couponFeignService;
 
     @Resource
-    private PmsSkuInfoServiceImpl pmsSkuInfoService;
+    private PmsSkuInfoService pmsSkuInfoService;
+
+    @Resource
+    private PmsBrandService brandService;
+
+    @Resource
+    private PmsCategoryService categoryService;
+
+    @Resource
+    private PmsAttrService attrService;
+
+    @Resource
+    private WareFeignService wareFeignService;
+
 
     @Override
     public int deleteByPrimaryKey(Long id) {
@@ -114,6 +131,64 @@ public class PmsSpuInfoServiceImpl implements PmsSpuInfoService {
         PageInfo<PmsSpuInfo> spuInFoPageInfo = new PageInfo<>(list);
         PageEntity pageEntity=new PageEntity(spuInFoPageInfo.getTotal(),spuInFoPageInfo.getPages(),spuInFoPageInfo.getList());
         return pageEntity;
+    }
+
+    @Override
+    public void up(Long id) {
+        List<SkuEsModel> upProducts=new ArrayList<>();
+
+        //根据当前spluId查询出对应的所有sku信息。
+        List<PmsSkuInfo> skuInfos = pmsSkuInfoService.selectBySpuId(id);
+        List<Long> skuIds = skuInfos.stream().map(sku -> {
+            return sku.getSkuId();
+        }).collect(Collectors.toList());
+        //TODO 3.查询品牌和分类的名字信息
+        PmsBrand brand = brandService.selectByPrimaryKey(skuInfos.get(0).getBrandId());
+        PmsCategory category = categoryService.selectByPrimaryKey(skuInfos.get(0).getCatalogId());
+        //TODO 4.查询当前spu的所有可以被用来检索的规格属性
+        //查询可以被检索的规格属性
+        Set<Long> attrIds = attrService.selectBySearchType(1L);
+
+        List<SkuEsModel.Attrs> attrList = productAttrValueService.selectBySpuId(id).stream().filter(item -> {
+            return attrIds.contains(item);
+        }).map(item->{
+            SkuEsModel.Attrs esAttr = new SkuEsModel.Attrs();
+            BeanUtils.copyProperties(item,esAttr);
+            return esAttr;
+        }).collect(Collectors.toList());
+        //TODO 1.发送远程调用，查询是否有库存
+        Map<Long, Boolean> wareMap=null;
+        try{
+            Result<List<SkusHasStockVo>> skusHasStock = wareFeignService.getSkusHasStock(skuIds);
+             wareMap= skusHasStock.getData().stream().collect(Collectors.toMap(SkusHasStockVo::getSkuId, item -> item.getHasStock()));
+        }catch (Exception e){
+            log.error("库存服务查询异常:原因{}",e);
+        }
+
+        Map<Long, Boolean> finalWareMap = wareMap;
+        List<SkuEsModel> esModels = skuInfos.stream().map(sku -> {
+            SkuEsModel esModel = new SkuEsModel();
+            BeanUtils.copyProperties(sku,esModel);
+            esModel.setSkuPrice(sku.getPrice());
+            esModel.setSkuImg(sku.getSkuDefaultImg());
+            //设置库存信息
+            if(finalWareMap ==null){
+                esModel.setHasStock(true);
+            }else{
+                esModel.setHasStock(finalWareMap.get(sku.getSkuId()));
+            }
+
+            //TODO 2.热度评分
+            esModel.setHotScore(0L);
+            esModel.setBrandName(brand.getName());
+            esModel.setBrandImg(brand.getLogo());
+            esModel.setCatalogName(category.getName());
+
+            esModel.setAttrs(attrList);
+            return esModel;
+        }).collect(Collectors.toList());
+
+        //TODO 5.发送给es进行保存
     }
 
 }

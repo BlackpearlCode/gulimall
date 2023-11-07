@@ -31,12 +31,18 @@ public class SpuSaveController {
         return Result.r(BizCodeEnum.OK.getCode(),BizCodeEnum.OK.getMsg()).put("page",pageEntity);
     }
 
+    //商品上架
+//    @RequestMapping("/{id}/up")
+//    public Result update(@PathVariable("id")Long id){
+//        PmsSpuInfo spuInfo = spuInfoService.selectByPrimaryKey(id);
+//        //设置商品为上架状态
+//        spuInfo.setPublishStatus((byte) 1);
+//        spuInfoService.updateByPrimaryKeySelective(spuInfo);
+//        return Result.r(BizCodeEnum.OK.getCode(),BizCodeEnum.OK.getMsg());
+//    }
     @RequestMapping("/{id}/up")
     public Result update(@PathVariable("id")Long id){
-        PmsSpuInfo spuInfo = spuInfoService.selectByPrimaryKey(id);
-        //设置商品为上架状态
-        spuInfo.setPublishStatus((byte) 1);
-        spuInfoService.updateByPrimaryKeySelective(spuInfo);
+        spuInfoService.up(id);
         return Result.r(BizCodeEnum.OK.getCode(),BizCodeEnum.OK.getMsg());
     }
 }

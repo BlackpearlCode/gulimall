@@ -5,6 +5,7 @@ import com.gulimall.product.entity.PmsAttr;
 import com.gulimall.product.vo.AttrInfoVo;
 
 import java.util.List;
+import java.util.Set;
 
 public interface PmsAttrService{
 
@@ -32,4 +33,7 @@ public interface PmsAttrService{
 
     //根据attrid批量删除
     void batchDeleteByAttrId(List<Long> attrIds);
+
+    //查询可以被检索的规格属性
+    Set<Long> selectBySearchType(Long type);
 }

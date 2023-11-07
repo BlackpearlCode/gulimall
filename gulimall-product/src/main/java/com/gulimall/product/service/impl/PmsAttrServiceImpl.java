@@ -19,6 +19,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -181,6 +182,11 @@ public class PmsAttrServiceImpl implements PmsAttrService {
     @Override
     public void batchDeleteByAttrId(List<Long> attrIds) {
         pmsAttrMapper.batchDeleteByAttrId(attrIds);
+    }
+
+    @Override
+    public Set<Long> selectBySearchType(Long type) {
+        return pmsAttrMapper.selectBySearchType(type);
     }
 
 

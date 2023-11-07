@@ -24,4 +24,7 @@ public interface WareSkuMapper {
     List<WareSku> getAll(@Param("params") Map<String, Object> params);
 
     WareSku selectBySkuIdAndWareId(Long skuId, Long wareId);
+
+
+    int selectBySkuId(Long skuId);
 }

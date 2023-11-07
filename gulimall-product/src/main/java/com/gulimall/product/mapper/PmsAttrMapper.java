@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 @Mapper
 public interface PmsAttrMapper {
@@ -36,4 +37,6 @@ public interface PmsAttrMapper {
     void batchDeleteByAttrId(@Param("attrIds") List<Long> attrIds);
 
     PmsAttr selectAttrNameByAttrIdAndAttrType(Long item, int attrType);
+
+    Set<Long> selectBySearchType(Long type);
 }

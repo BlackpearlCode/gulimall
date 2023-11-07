@@ -159,4 +159,11 @@ public class PmsSkuInfoServiceImpl implements PmsSkuInfoService {
         return pageEntity;
     }
 
+    @Override
+    public List<PmsSkuInfo> selectBySpuId(Long spuId) {
+        List<PmsSkuInfo> skuInfos = pmsSkuInfoMapper.selectBySpuId(spuId);
+        return skuInfos;
+    }
+
+
 }
