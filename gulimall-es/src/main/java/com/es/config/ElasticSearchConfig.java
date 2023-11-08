@@ -1,4 +1,4 @@
-package com.elasticsearch.gulimallelasticsearch.config;
+package com.es.config;
 
 import co.elastic.clients.elasticsearch.ElasticsearchAsyncClient;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;

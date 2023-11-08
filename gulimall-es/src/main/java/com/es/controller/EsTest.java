@@ -1,4 +1,4 @@
-package com.elasticsearch.gulimallelasticsearch.controller;
+package com.es.controller;
 
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
 
