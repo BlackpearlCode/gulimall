@@ -75,7 +75,7 @@ public class PmsAttrServiceImpl implements PmsAttrService {
     public PageEntity selectAll(int page, int limit, String key, Long catelogId, String attrType) {
 
         //如果attrType==null，查询基本属性；如果attrType==0，只查询销售属性
-        attrType= String.valueOf(attrType.equals(ProductConstant.ATTR_TYPE_BASE.getMsg())?1:0);
+        attrType= String.valueOf(attrType.equals(ProductConstant.AttrEnum.ATTR_TYPE_BASE.getMsg())?1:0);
         List<PmsAttr> attrs;
         if(catelogId==0){
             attrs = pmsAttrMapper.selectByKey(key,attrType);
@@ -117,7 +117,7 @@ public class PmsAttrServiceImpl implements PmsAttrService {
         BeanUtils.copyProperties(pmsAttr,attrUPdateVo);
         attrUPdateVo.setCatelogPath(path);
         //如果是销售信息，不设置分组信息
-        if(pmsAttr.getAttrType()== ProductConstant.ATTR_TYPE_BASE.getCode()){
+        if(pmsAttr.getAttrType()== ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode()){
             if(null!=attrgroupRelation){
                 String attrGroupName = pmsAttrGroupMapper.selectByPrimaryKey(attrgroupRelation.getAttrGroupId()).getAttrGroupName();
                 attrUPdateVo.setGroupName(attrGroupName);
@@ -165,7 +165,7 @@ public class PmsAttrServiceImpl implements PmsAttrService {
             return item.getAttrId();
         }).collect(Collectors.toList());
         //查询当前(catelog_log)所属分类id下属性id不在attrList集合中的所有属性，即显示的关联属性
-        int attrType= ProductConstant.ATTR_TYPE_BASE.getCode();
+        int attrType= ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode();
         List<PmsAttr> attrList=pmsAttrMapper.selectRelation(catelogId,attrIdList,key,attrType);
         List<AttrNoRelationVo> noRelationVoList = new ArrayList<>();
         for (PmsAttr attr: attrList) {

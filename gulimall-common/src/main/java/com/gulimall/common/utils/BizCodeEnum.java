@@ -7,7 +7,9 @@ public enum BizCodeEnum {
     UNKNOW_EXCEPION(10000,"系统未知异常"),
 
     OK(0,"SUCCESS"),
-    ERROR(500,"ERROR");
+    ERROR(500,"ERROR"),
+    PRODUCT_UP_EXCEPTION(11000,"商品上架异常");
+
 
     private int code;
     private String msg;

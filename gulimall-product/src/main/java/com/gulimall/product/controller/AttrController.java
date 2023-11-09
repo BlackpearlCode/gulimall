@@ -46,7 +46,7 @@ public class AttrController {
         BeanUtils.copyProperties(attrVo,pmsAttr);
         attrService.insert(pmsAttr);
         //判断是添加销售属性还是基本属性；如果是添加销售属性，不添加分组关联
-        if(attrVo.getAttrType()== ProductConstant.ATTR_TYPE_SALE.getCode()){
+        if(attrVo.getAttrType()== ProductConstant.AttrEnum.ATTR_TYPE_SALE.getCode()){
             return Result.r(BizCodeEnum.OK.getCode(), BizCodeEnum.OK.getMsg());
         }
         //关联表添加数据
@@ -91,7 +91,7 @@ public class AttrController {
         BeanUtils.copyProperties(attrInfoVo,attr);
         attrService.updateByPrimaryKeySelective(attr);
         //判断是修改销售属性还是基本属性；如果是修改销售属性，不修改分组数据
-        if(attrInfoVo.getAttrType()== ProductConstant.ATTR_TYPE_SALE.getCode()){
+        if(attrInfoVo.getAttrType()== ProductConstant.AttrEnum.ATTR_TYPE_SALE.getCode()){
             return Result.r(BizCodeEnum.OK.getCode(), BizCodeEnum.OK.getMsg());
         }
         Long attrGroupId = attrInfoVo.getAttrGroupId();

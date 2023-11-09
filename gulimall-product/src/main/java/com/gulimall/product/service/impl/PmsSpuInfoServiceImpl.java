@@ -2,14 +2,16 @@ package com.gulimall.product.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.gulimall.common.constant.ProductConstant;
+import com.gulimall.common.es.SkuEsModel;
 import com.gulimall.common.to.SkusHasStockVo;
 import com.gulimall.common.to.SpuBoundTo;
 import com.gulimall.common.utils.PageEntity;
 import com.gulimall.common.constant.PublishStatusConstrant;
 import com.gulimall.common.utils.Result;
 import com.gulimall.product.entity.*;
-import com.gulimall.product.es.SkuEsModel;
 import com.gulimall.product.feign.CouponFeignService;
+import com.gulimall.product.feign.SearchFeignService;
 import com.gulimall.product.feign.WareFeignService;
 import com.gulimall.product.mapper.PmsSpuInfoMapper;
 import com.gulimall.product.service.*;
@@ -21,6 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -57,6 +62,9 @@ public class PmsSpuInfoServiceImpl implements PmsSpuInfoService {
 
     @Resource
     private WareFeignService wareFeignService;
+
+    @Resource
+    private SearchFeignService searchFeignService;
 
 
     @Override
@@ -97,7 +105,7 @@ public class PmsSpuInfoServiceImpl implements PmsSpuInfoService {
         BeanUtils.copyProperties(spu,spuInfo);
         spuInfo.setCreateTime(new Date());
         spuInfo.setUpdateTime(new Date());
-        spuInfo.setPublishStatus((byte) PublishStatusConstrant.NEWbUILE.getCode());
+        spuInfo.setPublishStatus(PublishStatusConstrant.NEWbUILE.getCode());
         pmsSpuInfoMapper.insert(spuInfo);
         //2.保存spu的描述图片 pms_spu_info_desc
         PmsSpuInfoDesc spuInfoDesc=new PmsSpuInfoDesc();
@@ -134,7 +142,8 @@ public class PmsSpuInfoServiceImpl implements PmsSpuInfoService {
     }
 
     @Override
-    public void up(Long id) {
+    public void
+    up(Long id) {
         List<SkuEsModel> upProducts=new ArrayList<>();
 
         //根据当前spluId查询出对应的所有sku信息。
@@ -189,6 +198,16 @@ public class PmsSpuInfoServiceImpl implements PmsSpuInfoService {
         }).collect(Collectors.toList());
 
         //TODO 5.发送给es进行保存
+        Result r=searchFeignService.productStatusUp(esModels);
+        if(r.get("code").equals(0)){
+            //TODO 6.远程调用成功，修改当前spu的状态
+            PmsSpuInfo spu=new PmsSpuInfo();
+            spu.setId(id);
+            spu.setPublishStatus(ProductConstant.StatusEnum.SPU_UP.getCode());
+            spu.setUpdateTime(new Date());
+            pmsSpuInfoMapper.updateByPrimaryKeySelective(spu);
+        }else{
+            //远程调用失败
+        }
     }
-
 }

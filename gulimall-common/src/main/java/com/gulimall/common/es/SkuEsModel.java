@@ -1,4 +1,4 @@
-package com.gulimall.product.es;
+package com.gulimall.common.es;
 
 import lombok.Data;
 

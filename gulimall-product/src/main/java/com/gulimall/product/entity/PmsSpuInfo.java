@@ -44,7 +44,7 @@ public class PmsSpuInfo implements Serializable {
     /**
     * 上架状态[0 - 下架，1 - 上架]
     */
-    private Byte publishStatus;
+    private Integer publishStatus;
 
     private Date createTime;
 
