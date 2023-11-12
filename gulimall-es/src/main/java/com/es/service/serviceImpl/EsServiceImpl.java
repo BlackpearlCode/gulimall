@@ -49,7 +49,7 @@ public class EsServiceImpl implements IEsService {
         List<String> collect = bulk.items().stream().map(item -> {
             return item.id();
         }).collect(Collectors.toList());
-        log.info("商品上架错误：{}",collect);
+        log.info("商品上架错误：{}，返回数据：{}",collect,bulk);
         return b;
     }
 

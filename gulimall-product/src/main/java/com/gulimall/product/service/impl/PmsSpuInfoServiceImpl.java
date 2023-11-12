@@ -1,5 +1,7 @@
 package com.gulimall.product.service.impl;
 
+
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.gulimall.common.constant.ProductConstant;
@@ -16,12 +18,16 @@ import com.gulimall.product.mapper.PmsSpuInfoMapper;
 import com.gulimall.product.service.*;
 import com.gulimall.product.vo.*;
 import lombok.extern.slf4j.Slf4j;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -139,7 +145,6 @@ public class PmsSpuInfoServiceImpl implements PmsSpuInfoService {
 
     @Override
     public void up(Long id) {
-        List<SkuEsModel> upProducts=new ArrayList<>();
 
         //根据当前spluId查询出对应的所有sku信息。
         List<PmsSkuInfo> skuInfos = pmsSkuInfoService.selectBySpuId(id);
@@ -163,8 +168,11 @@ public class PmsSpuInfoServiceImpl implements PmsSpuInfoService {
         //TODO 1.发送远程调用，查询是否有库存
         Map<Long, Boolean> stockMap=null;
         try{
-            List<SkusHasStockVo> skusHasStock = wareFeignService.getSkusHasStock(skuIds);
-            stockMap= skusHasStock.stream().collect(
+            Result r = wareFeignService.getSkusHasStock(skuIds);
+            TypeReference<List<SkusHasStockVo>> typeReference = new TypeReference<List<SkusHasStockVo>>(){};
+            String data = JSON.toJSONString(r.get("data"));
+            List<SkusHasStockVo> list = new ObjectMapper().readValue(data, typeReference);
+            stockMap= list.stream().collect(
                     Collectors.toMap(SkusHasStockVo::getSkuId, item -> item.getHasStock())
             );
         }catch (Exception e){

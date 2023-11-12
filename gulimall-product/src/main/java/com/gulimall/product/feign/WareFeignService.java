@@ -14,5 +14,5 @@ import java.util.List;
 public interface WareFeignService {
 
     @RequestMapping("ware/waresku/hasStock")
-    List<SkusHasStockVo> getSkusHasStock(@RequestBody List<Long> skuIds);
+    Result getSkusHasStock(@RequestBody List<Long> skuIds);
 }

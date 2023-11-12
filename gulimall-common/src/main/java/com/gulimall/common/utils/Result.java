@@ -2,6 +2,7 @@ package com.gulimall.common.utils;
 
 
 
+
 import java.util.HashMap;
 
 
@@ -20,11 +21,25 @@ public class Result<T> extends HashMap<String, Object> {
         return r;
     }
 
-
-    @Override
-    public String toString() {
-        return "Result{" +
-                "data=" + data +
-                '}';
+    public Result setData(Object data){
+        put("data",data);
+        return this;
     }
+
+    public Result() {
+        put("code", 0);
+        put("msg", "success");
+    }
+
+    public static Result ok() {
+        return new Result();
+    }
+
+
+
+
+
+
+
+
 }

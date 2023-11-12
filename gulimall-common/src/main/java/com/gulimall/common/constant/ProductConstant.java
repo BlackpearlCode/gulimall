@@ -26,8 +26,8 @@ public class ProductConstant {
 
     public enum StatusEnum{
         NEW_SPU(0,"新建商品"),
-        SPU_UP(0,"商品上架"),
-        SPU_DOWN(0,"商品下架");
+        SPU_UP(1,"商品上架"),
+        SPU_DOWN(-1,"商品下架");
         private int code;
         private String msg;
 
