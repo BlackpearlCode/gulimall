@@ -4,7 +4,6 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.gulimall.common.constant.ProductConstant;
 import com.gulimall.common.es.SkuEsModel;
-import com.gulimall.common.to.SkusHasStockVo;
 import com.gulimall.common.to.SpuBoundTo;
 import com.gulimall.common.utils.PageEntity;
 import com.gulimall.common.constant.PublishStatusConstrant;
@@ -23,9 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -142,8 +138,7 @@ public class PmsSpuInfoServiceImpl implements PmsSpuInfoService {
     }
 
     @Override
-    public void
-    up(Long id) {
+    public void up(Long id) {
         List<SkuEsModel> upProducts=new ArrayList<>();
 
         //根据当前spluId查询出对应的所有sku信息。
@@ -159,32 +154,34 @@ public class PmsSpuInfoServiceImpl implements PmsSpuInfoService {
         Set<Long> attrIds = attrService.selectBySearchType(1L);
 
         List<SkuEsModel.Attrs> attrList = productAttrValueService.selectBySpuId(id).stream().filter(item -> {
-            return attrIds.contains(item);
+            return attrIds.contains(item.getAttrId());
         }).map(item->{
             SkuEsModel.Attrs esAttr = new SkuEsModel.Attrs();
             BeanUtils.copyProperties(item,esAttr);
             return esAttr;
         }).collect(Collectors.toList());
         //TODO 1.发送远程调用，查询是否有库存
-        Map<Long, Boolean> wareMap=null;
+        Map<Long, Boolean> stockMap=null;
         try{
-            Result<List<SkusHasStockVo>> skusHasStock = wareFeignService.getSkusHasStock(skuIds);
-             wareMap= skusHasStock.getData().stream().collect(Collectors.toMap(SkusHasStockVo::getSkuId, item -> item.getHasStock()));
+            List<SkusHasStockVo> skusHasStock = wareFeignService.getSkusHasStock(skuIds);
+            stockMap= skusHasStock.stream().collect(
+                    Collectors.toMap(SkusHasStockVo::getSkuId, item -> item.getHasStock())
+            );
         }catch (Exception e){
             log.error("库存服务查询异常:原因{}",e);
         }
 
-        Map<Long, Boolean> finalWareMap = wareMap;
+        Map<Long, Boolean> finalStockMap = stockMap;
         List<SkuEsModel> esModels = skuInfos.stream().map(sku -> {
             SkuEsModel esModel = new SkuEsModel();
             BeanUtils.copyProperties(sku,esModel);
             esModel.setSkuPrice(sku.getPrice());
             esModel.setSkuImg(sku.getSkuDefaultImg());
             //设置库存信息
-            if(finalWareMap ==null){
+            if(finalStockMap ==null){
                 esModel.setHasStock(true);
             }else{
-                esModel.setHasStock(finalWareMap.get(sku.getSkuId()));
+                esModel.setHasStock(finalStockMap.get(sku.getSkuId()));
             }
 
             //TODO 2.热度评分

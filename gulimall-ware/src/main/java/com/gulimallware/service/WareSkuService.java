@@ -2,7 +2,7 @@ package com.gulimallware.service;
 
 import com.gulimall.common.utils.PageEntity;
 import com.gulimallware.entity.WareSku;
-import com.gulimall.common.to.SkusHasStockVo;
+import com.gulimallware.vo.SkusHasStockVo;
 
 import java.util.List;
 import java.util.Map;

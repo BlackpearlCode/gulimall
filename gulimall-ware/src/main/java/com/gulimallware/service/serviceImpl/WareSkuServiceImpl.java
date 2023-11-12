@@ -3,7 +3,7 @@ package com.gulimallware.service.serviceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.gulimall.common.utils.PageEntity;
-import com.gulimall.common.to.SkusHasStockVo;
+import com.gulimallware.vo.SkusHasStockVo;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import com.gulimallware.mapper.WareSkuMapper;
