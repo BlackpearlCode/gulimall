@@ -26,4 +26,5 @@ public interface PmsCategoryService{
     //批量删除(逻辑删除)
     int updateShowStatusList(List ids);
 
+    List<PmsCategory> getLevel1Categorys();
 }

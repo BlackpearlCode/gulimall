@@ -2,6 +2,7 @@ package com.gulimall.product.mapper;
 
 import com.gulimall.product.entity.PmsCategory;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -21,8 +22,8 @@ public interface PmsCategoryMapper {
 
     List<PmsCategory> list();
 
-    int updateShowStatusList(List catIds);
+    int updateShowStatusList(@Param("list") List<Long> catIds);
 
 
-
+    List<PmsCategory> selectByParentId();
 }

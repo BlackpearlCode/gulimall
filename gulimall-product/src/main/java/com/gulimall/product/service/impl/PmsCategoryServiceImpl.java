@@ -78,6 +78,13 @@ public class PmsCategoryServiceImpl implements PmsCategoryService {
 
     }
 
+    @Override
+    public List<PmsCategory> getLevel1Categorys() {
+        //查询所有一级分类，即parentId=0
+        return pmsCategoryMapper.selectByParentId();
+    }
+
+
     /**
      * 查找当前菜单的子菜单
      * @param root 当前菜单

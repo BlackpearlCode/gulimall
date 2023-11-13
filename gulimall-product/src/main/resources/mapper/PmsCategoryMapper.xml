@@ -146,11 +146,13 @@
     UPDATE
     pms_category
     SET show_status = 0
-    WHERE cat_id IN
-    <foreach collection="list"  item="catId" open="(" separator="," close=")">
-      #{catId}
+    WHERE cat_id in
+    <foreach collection="list"  item="item" open="(" separator="," close=")" index="index">
+      #{item}
     </foreach>
   </update>
 
-
+  <select id="selectByParentId" resultMap="BaseResultMap">
+    select * from  pms_category where parent_cid=0
+    </select>
 </mapper>
