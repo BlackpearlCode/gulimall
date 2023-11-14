@@ -153,6 +153,6 @@
   </update>
 
   <select id="selectByParentId" resultMap="BaseResultMap">
-    select * from  pms_category where parent_cid=0
+    select * from  pms_category where parent_cid=#{parentId,jdbcType=BIGINT}
     </select>
 </mapper>

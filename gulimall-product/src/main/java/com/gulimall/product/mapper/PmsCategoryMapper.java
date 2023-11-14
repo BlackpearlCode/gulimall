@@ -25,5 +25,5 @@ public interface PmsCategoryMapper {
     int updateShowStatusList(@Param("list") List<Long> catIds);
 
 
-    List<PmsCategory> selectByParentId();
+    List<PmsCategory> selectByParentId(Long parentId);
 }
