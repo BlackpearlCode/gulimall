@@ -11,6 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -199,7 +200,7 @@ public final class RedisUtil {
      * @param key 键
      * @return 对应的多个键值
      */
-    public Map<Object, Object> hmget(String key) {
+    public<T> Map<String, T> hmget(String key) {
         return readTemplate().opsForHash().entries(key);
     }
 
@@ -208,7 +209,7 @@ public final class RedisUtil {
      * @param key 键
      * @param map 对应多个键值
      */
-    public boolean hmset(String key, Map<String, Object> map) {
+    public<T> boolean hmset(String key, Map<String, T> map) {
         try {
             readTemplate().opsForHash().putAll(key, map);
             return true;

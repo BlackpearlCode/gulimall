@@ -1,13 +1,15 @@
 package com.gulimall.product.service.impl;
 
-import com.gulimall.product.mapper.PmsCategoryMapper;
 import com.gulimall.product.entity.PmsCategory;
+import com.gulimall.product.feign.RedisFeignService;
+import com.gulimall.product.mapper.PmsCategoryMapper;
 import com.gulimall.product.service.PmsCategoryService;
 import com.gulimall.product.vo.Catelog2Vo;
-import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
+import org.springframework.util.MultiValueMap;
 
+import javax.annotation.Resource;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,9 @@ public class PmsCategoryServiceImpl implements PmsCategoryService {
 
     @Resource
     private PmsCategoryMapper pmsCategoryMapper;
+
+    @Autowired
+    private RedisFeignService redisFeignService;
 
     @Override
     public int deleteByPrimaryKey(Long catId) {
@@ -86,9 +91,23 @@ public class PmsCategoryServiceImpl implements PmsCategoryService {
         //查询parentId对应的分类信息
         return pmsCategoryMapper.selectByParentId(parentId);
     }
-
     @Override
     public Map<String, List<Catelog2Vo>> getCatalogJson() {
+        //判断是否存在缓存
+        Boolean catalogJSON = redisFeignService.isExist("catalogJSON");
+        if(catalogJSON){
+            //从缓存中获取三级目录内容
+            Map<String, List<Catelog2Vo>> catalog = redisFeignService.hmget("catalogJSON");
+            return catalog;
+        }
+        Map<String, List<Catelog2Vo>> catalogJsonFromDB = getCatalogJsonFromDB();
+        //加入缓存
+        redisFeignService.saveCatalogJson("catalogJSON",catalogJsonFromDB);
+        return catalogJsonFromDB;
+    }
+
+    //从数据库查询并封装数据
+    public Map<String, List<Catelog2Vo>> getCatalogJsonFromDB() {
         /**
          * 将数据库的多次查询变成一次查询
          */
