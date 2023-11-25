@@ -7,7 +7,6 @@ import com.gulimall.product.service.PmsCategoryService;
 import com.gulimall.product.vo.Catelog2Vo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
 
 import javax.annotation.Resource;
 import java.util.Comparator;
