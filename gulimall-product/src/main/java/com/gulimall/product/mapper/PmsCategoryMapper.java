@@ -26,4 +26,5 @@ public interface PmsCategoryMapper {
 
 
     List<PmsCategory> selectByParentId(Long parentId);
+    List<PmsCategory> selectAll();
 }

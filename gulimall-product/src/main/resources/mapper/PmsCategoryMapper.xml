@@ -155,4 +155,7 @@
   <select id="selectByParentId" resultMap="BaseResultMap">
     select * from  pms_category where parent_cid=#{parentId,jdbcType=BIGINT}
     </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select * from pms_category
+  </select>
 </mapper>

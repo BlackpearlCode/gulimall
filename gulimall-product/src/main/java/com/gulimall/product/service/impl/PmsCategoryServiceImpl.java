@@ -89,17 +89,21 @@ public class PmsCategoryServiceImpl implements PmsCategoryService {
 
     @Override
     public Map<String, List<Catelog2Vo>> getCatalogJson() {
+        /**
+         * 将数据库的多次查询变成异常
+         */
+        List<PmsCategory> pmsCategories = pmsCategoryMapper.selectAll();
         //查出所有一级分类
-        List<PmsCategory> level1Categorys = this.getLevelCategorys(0L);
-        Map<String, List<Catelog2Vo>> parent_cid = level1Categorys.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
+        List<PmsCategory> level1Categorys = getLevelCategorys(pmsCategories,0L);
+        Map<String, List<Catelog2Vo>> parent_cid = level1Categorys.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), l1 -> {
             //查询每个一级分类下的二级分类
-            List<PmsCategory> categoryList1 = pmsCategoryMapper.selectByParentId(v.getCatId());
+            List<PmsCategory> categoryList1 = getParentId(pmsCategories,l1.getCatId());
             List<Catelog2Vo> catelog2VoList = null;
             if (!categoryList1.isEmpty()) {
                 catelog2VoList = categoryList1.stream().map(level2 -> {
-                    Catelog2Vo catelog2Vo = new Catelog2Vo(v.getCatId().toString(), null, level2.getCatId().toString(), level2.getName());
+                    Catelog2Vo catelog2Vo = new Catelog2Vo(l1.getCatId().toString(), null, level2.getCatId().toString(), level2.getName());
                     //查询每个二级分类下的三级分类
-                    List<PmsCategory> categoryList3 = pmsCategoryMapper.selectByParentId(level2.getCatId());
+                    List<PmsCategory> categoryList3 = getCategoryList3(pmsCategories,level2.getCatId());
                     if (!categoryList3.isEmpty()) {
                         List<Catelog2Vo.Catelog3Vo> catelog3Vos = categoryList3.stream().map(level3 -> {
                             Catelog2Vo.Catelog3Vo catelog3Vo = new Catelog2Vo.Catelog3Vo(level2.getCatId().toString(), level3.getCatId().toString(), level3.getName());
@@ -113,6 +117,19 @@ public class PmsCategoryServiceImpl implements PmsCategoryService {
             return catelog2VoList;
         }));
         return  parent_cid;
+    }
+
+    //查询一级分类
+    private List<PmsCategory> getLevelCategorys(List<PmsCategory>pmsCategories ,Long parentId) {
+        return pmsCategories.stream().filter(item->item.getParentCid()==parentId).collect(Collectors.toList());
+    }
+    //查询三级分类
+    private List<PmsCategory> getCategoryList3(List<PmsCategory>pmsCategories ,Long parentId) {
+        return pmsCategories.stream().filter(item->item.getParentCid()==parentId).collect(Collectors.toList());
+    }
+    //查询二级分类
+    private List<PmsCategory> getParentId(List<PmsCategory>pmsCategories ,Long parentId) {
+        return pmsCategories.stream().filter(item->item.getParentCid()==parentId).collect(Collectors.toList());
     }
 
 
