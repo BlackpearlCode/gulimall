@@ -90,7 +90,7 @@ public class PmsCategoryServiceImpl implements PmsCategoryService {
     @Override
     public Map<String, List<Catelog2Vo>> getCatalogJson() {
         /**
-         * 将数据库的多次查询变成异常
+         * 将数据库的多次查询变成一次查询
          */
         List<PmsCategory> pmsCategories = pmsCategoryMapper.selectAll();
         //查出所有一级分类
