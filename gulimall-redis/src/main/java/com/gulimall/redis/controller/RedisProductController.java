@@ -44,10 +44,6 @@ public class RedisProductController {
         return redisUtil.redisLock( key,  value, timeout,timeUnit);
     }
 
-//    @RequestMapping("/deleteRedisLock")
-//    public Boolean deleteRedisLock(@RequestParam("key") String key){
-//        return redisUtil.deleteRedisLock(key);
-//    }
 
     //普通缓存获取
     @RequestMapping("/get")
