@@ -12,6 +12,8 @@ import javax.annotation.Resource;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -99,42 +101,65 @@ public class PmsCategoryServiceImpl implements PmsCategoryService {
             Map<String, List<Catelog2Vo>> catalog = redisFeignService.hmget("catalogJSON");
             return catalog;
         }
+        //查询数据
         Map<String, List<Catelog2Vo>> catalogJsonFromDB = getCatalogJsonFromDB();
-        //加入缓存
-        redisFeignService.saveCatalogJson("catalogJSON",catalogJsonFromDB);
         return catalogJsonFromDB;
     }
 
     //从数据库查询并封装数据
     public Map<String, List<Catelog2Vo>> getCatalogJsonFromDB() {
-        /**
-         * 将数据库的多次查询变成一次查询
-         */
-        List<PmsCategory> pmsCategories = pmsCategoryMapper.selectAll();
-        //查出所有一级分类
-        List<PmsCategory> level1Categorys = getLevelCategorys(pmsCategories,0L);
-        Map<String, List<Catelog2Vo>> parent_cid = level1Categorys.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), l1 -> {
-            //查询每个一级分类下的二级分类
-            List<PmsCategory> categoryList1 = getParentId(pmsCategories,l1.getCatId());
-            List<Catelog2Vo> catelog2VoList = null;
-            if (!categoryList1.isEmpty()) {
-                catelog2VoList = categoryList1.stream().map(level2 -> {
-                    Catelog2Vo catelog2Vo = new Catelog2Vo(l1.getCatId().toString(), null, level2.getCatId().toString(), level2.getName());
-                    //查询每个二级分类下的三级分类
-                    List<PmsCategory> categoryList3 = getCategoryList3(pmsCategories,level2.getCatId());
-                    if (!categoryList3.isEmpty()) {
-                        List<Catelog2Vo.Catelog3Vo> catelog3Vos = categoryList3.stream().map(level3 -> {
-                            Catelog2Vo.Catelog3Vo catelog3Vo = new Catelog2Vo.Catelog3Vo(level2.getCatId().toString(), level3.getCatId().toString(), level3.getName());
-                            return catelog3Vo;
-                        }).collect(Collectors.toList());
-                        catelog2Vo.setCatalog3list(catelog3Vos);
-                    }
-                    return catelog2Vo;
-                }).collect(Collectors.toList());
+        //加锁解决缓存击穿
+        synchronized (this){
+            //查询缓存是否命中
+            Boolean catalogJSON = redisFeignService.isExist("catalogJSON");
+            if(catalogJSON ){
+                //从缓存中获取三级目录内容
+                Map<String, List<Catelog2Vo>> catalog = redisFeignService.hmget("catalogJSON");
+                System.out.println("从缓存中获取数据......");
+                return catalog;
+
             }
-            return catelog2VoList;
-        }));
-        return  parent_cid;
+            /**
+             * 将数据库的多次查询变成一次查询
+             */
+            List<PmsCategory> pmsCategories = pmsCategoryMapper.selectAll();
+            System.out.println("从数据库中查询数据.........");
+            //查出所有一级分类
+            List<PmsCategory> level1Categorys = getLevelCategorys(pmsCategories,0L);
+            Map<String, List<Catelog2Vo>> parent_cid = level1Categorys.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), l1 -> {
+                //查询每个一级分类下的二级分类
+                List<PmsCategory> categoryList1 = getParentId(pmsCategories,l1.getCatId());
+                List<Catelog2Vo> catelog2VoList = null;
+                if (!categoryList1.isEmpty()) {
+                    catelog2VoList = categoryList1.stream().map(level2 -> {
+                        Catelog2Vo catelog2Vo = new Catelog2Vo(l1.getCatId().toString(), null, level2.getCatId().toString(), level2.getName());
+                        //查询每个二级分类下的三级分类
+                        List<PmsCategory> categoryList3 = getCategoryList3(pmsCategories,level2.getCatId());
+                        if (!categoryList3.isEmpty()) {
+                            List<Catelog2Vo.Catelog3Vo> catelog3Vos = categoryList3.stream().map(level3 -> {
+                                Catelog2Vo.Catelog3Vo catelog3Vo = new Catelog2Vo.Catelog3Vo(level2.getCatId().toString(), level3.getCatId().toString(), level3.getName());
+                                return catelog3Vo;
+                            }).collect(Collectors.toList());
+                            catelog2Vo.setCatalog3list(catelog3Vos);
+                        }
+                        return catelog2Vo;
+                    }).collect(Collectors.toList());
+                }
+                return catelog2VoList;
+            }));
+            //将查询出的数据放入缓存
+            //缓存失效时间(解决缓存雪崩)
+            Random random=new Random();
+            long randomTime=random.nextInt(60*60*24);
+            long time=TimeUnit.SECONDS.convert(1, TimeUnit.DAYS)+randomTime;
+            //加入缓存
+            if(parent_cid.isEmpty()){
+                redisFeignService.saveCatalogJson("catalogJSON",time,null);
+            }else {
+                redisFeignService.saveCatalogJson("catalogJSON",time,parent_cid);
+            }
+            return  parent_cid;
+        }
     }
 
     //查询一级分类

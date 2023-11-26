@@ -20,8 +20,8 @@ public class RedisProductController {
 
     //将三级目录保存到redis缓存中
     @RequestMapping("/saveCatalogJSON")
-    public <T> Boolean saveCatalogJson(@RequestParam("key") String key, @RequestBody Map<String, T> map){
-        return redisUtil.hmset(key, map);
+    public <T> Boolean saveCatalogJson(@RequestParam("key") String key,@RequestParam("time") long time, @RequestBody Map<String, T> map){
+        return redisUtil.hmset(key,map,time);
     }
 
     //判断key是否存在
