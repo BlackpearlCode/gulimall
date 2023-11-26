@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @FeignClient(value = "gulimall-redis")
 public interface RedisFeignService {
@@ -23,6 +24,18 @@ public interface RedisFeignService {
     public Boolean isExist(@RequestParam("key") String key);
 
     //获取hashKey对应的所有键值
-    @RequestMapping("/redis/product/getValue")
+    @RequestMapping("/redis/product/getMap")
     public<T> Map<String,T> hmget(@RequestParam("key") String key);
+
+    //设置reids分布式锁
+    @RequestMapping("/redis/product//redisLock")
+    public<T> Boolean redisLock(@RequestParam("key") String key,@RequestParam("value") T value, @RequestParam("timeout")long timeout,@RequestParam("timeUnit") TimeUnit timeUnit);
+
+    //删除redis分布式锁
+    @RequestMapping("/deleteRedisLock")
+    public<T> T deleteRedisLock(@RequestParam("script")String script,@RequestParam("keys") List<String> keys,@RequestParam("value") String value);
+
+    //普通缓存获取
+    @RequestMapping("/get")
+    public Object getValue(@RequestParam("key") String key);
 }

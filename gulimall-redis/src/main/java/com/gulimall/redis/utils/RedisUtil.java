@@ -8,6 +8,7 @@ import com.gulimall.redis.service.serviceImpl.RedisReadServiceImpl;
 import com.gulimall.redis.service.serviceImpl.RedisWriteServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -105,6 +106,40 @@ public final class RedisUtil {
         }
     }
 
+    /**
+     * 设置redis分布式锁
+     * @param key
+     * @param value
+     * @param timeout：锁过期时间
+     * @param timeUnit：时间单位
+     * @return
+     * @param <T>
+     */
+    public<T> Boolean redisLock(String key, T value, long timeout,TimeUnit timeUnit){
+        return writeTemplate().opsForValue().setIfAbsent(key,value,timeout,timeUnit);
+    }
+
+    /**
+     * 删除redis分布式锁
+     * @param key
+     * @return
+     * @param <T>
+     */
+    public<T> Boolean deleteRedisLock(String key){
+        return writeTemplate().delete(key);
+    }
+
+    /**
+     * 用lua脚本删除redis分布式锁
+     * @param script：脚本
+     * @param keys：redis分布式锁对应的key
+     * @param value：redis分布式锁key对应的value
+     * @return
+     * @param <T>
+     */
+    public<T> T deleteRedisLock(String script,List<String> keys,String value){
+        return (T) writeTemplate().execute(new DefaultRedisScript<T>(script),keys,value);
+    }
 
     // ============================String=============================
 
@@ -185,6 +220,8 @@ public final class RedisUtil {
 
 
     // ================================Map=================================
+
+
 
     /**
      * HashGet

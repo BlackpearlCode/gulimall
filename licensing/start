@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>XRebel Trial</title>
-    <link href="/static/../resources/xr-styles.css" type="text/css" rel="stylesheet">
+    <link href="../resources/xr-styles.css" type="text/css" rel="stylesheet">
 </head>
 <body class="reg-page">
     <div
