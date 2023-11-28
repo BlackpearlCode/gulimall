@@ -1,18 +1,19 @@
-package com.gulimall.redis.utils;
+package com.gulimall.product.redis.utils;
 
 
 
-import com.gulimall.redis.config.RedisReadConnectionFactory;
-import com.gulimall.redis.config.RedisWriteConnectionFactory;
-import com.gulimall.redis.service.serviceImpl.RedisReadServiceImpl;
-import com.gulimall.redis.service.serviceImpl.RedisWriteServiceImpl;
+
+import com.gulimall.product.redis.config.RedisReadConnectionFactory;
+import com.gulimall.product.redis.config.RedisWriteConnectionFactory;
+import com.gulimall.product.redis.service.serviceImpl.RedisReadServiceImpl;
+import com.gulimall.product.redis.service.serviceImpl.RedisWriteServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import java.util.concurrent.TimeUnit;
  * redis工具类
  */
 @Component
+
 public final class RedisUtil {
 
 //    @Autowired

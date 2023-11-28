@@ -1,5 +1,4 @@
-package com.gulimall.redis.config;
-
+package com.gulimall.product.redis.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -12,12 +11,9 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.stereotype.Component;
 
 @Configuration
-@Component
-public class RedisWriteConnectionFactory implements RedisConfig {
-
+public class RedisReadConnectionFactory implements RedisConfig {
     @Value("${spring.redis.host}")
     private String host;
     @Value("${spring.redis.port}")
@@ -25,7 +21,6 @@ public class RedisWriteConnectionFactory implements RedisConfig {
 
     @Value("${spring.redis.password}")
     private String password;
-
     @Override
     public LettuceConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration serverConfig=new RedisStandaloneConfiguration(host,port);
@@ -34,6 +29,8 @@ public class RedisWriteConnectionFactory implements RedisConfig {
         factory.afterPropertiesSet();
         return factory;
     }
+
+
 
     @Override
     public RedisTemplate redisTemplate(RedisConnectionFactory redisConnectionFactory) {
@@ -45,7 +42,6 @@ public class RedisWriteConnectionFactory implements RedisConfig {
         om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
         jackson2JsonRedisSerializer.setObjectMapper(om);
         StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
-
         // key采用String的序列化方式
         template.setKeySerializer(stringRedisSerializer);
         // hash的key也采用String的序列化方式

@@ -1,10 +1,10 @@
-package com.gulimall.redis.service.serviceImpl;
+package com.gulimall.product.redis.service.serviceImpl;
 
 
 
 
-import com.gulimall.redis.config.RedisConfig;
-import com.gulimall.redis.service.RedisService;
+import com.gulimall.product.redis.config.RedisConfig;
+import com.gulimall.product.redis.service.RedisService;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
