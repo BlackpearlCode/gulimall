@@ -20,7 +20,7 @@ public class IndexController {
 
     @Autowired
     private PmsCategoryService categoryService;
-    @GetMapping("/")
+    @GetMapping({"/","/index.html"})
     public String indexPage(Model model){
         //查询所有一级分类
         List<PmsCategory> categoryList = categoryService.getLevelCategorys(0l);
@@ -31,8 +31,8 @@ public class IndexController {
 
     @ResponseBody
     @GetMapping("/index/catalog.json")
-    public Map<String, List<Catelog2Vo>> getCatalogJson(@RequestParam("key") String key){
-        Map<String, List<Catelog2Vo>> map=categoryService.getCatalogJson(key);
+    public Map<String, List<Catelog2Vo>> getCatalogJson(){
+        Map<String, List<Catelog2Vo>> map=categoryService.getCatalogJson();
         return map;
     }
 }

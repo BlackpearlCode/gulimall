@@ -32,5 +32,5 @@ public interface PmsCategoryService{
 
     //三级分类
 
-    Map<String, List<Catelog2Vo>> getCatalogJson(String key);
+    Map<String, List<Catelog2Vo>> getCatalogJson();
 }

@@ -99,7 +99,9 @@ public class PmsCategoryServiceImpl implements PmsCategoryService {
 
     @Override
     @GmallCache(prefix = "catalogJSON")
-    public Map<String, List<Catelog2Vo>> getCatalogJson(String key) {
+    public Map<String, List<Catelog2Vo>> getCatalogJson() {
+        String key="catalogJSON";
+
          return getDataFromDB(key);
     }
 
