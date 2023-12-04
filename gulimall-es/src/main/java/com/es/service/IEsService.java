@@ -9,10 +9,11 @@ public interface IEsService {
 
 
     /**
-     * 批量添加文档数据
-     * @param list：批量文档数据
+     * 商品保存
+     * @param skuEsModels
+     * @return
      * @throws IOException
      */
-    boolean batchCreateDocument(List<SkuEsModel> list) throws IOException;
+    boolean productStatusUp(List<SkuEsModel> skuEsModels) throws IOException;
 
 }

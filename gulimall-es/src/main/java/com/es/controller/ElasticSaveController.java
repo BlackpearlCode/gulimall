@@ -28,7 +28,7 @@ public class ElasticSaveController {
     public Result productStatusUp(@RequestBody List<SkuEsModel> skuEsModels)  {
         boolean b = false;
         try {
-            b = esService.batchCreateDocument(skuEsModels);
+            b = esService.productStatusUp(skuEsModels);
         } catch (IOException e) {
             log.error("ElasticSaveController商品上架异常：{}",e);
             return Result.r(BizCodeEnum.PRODUCT_UP_EXCEPTION.getCode(), BizCodeEnum.PRODUCT_UP_EXCEPTION.getMsg());
