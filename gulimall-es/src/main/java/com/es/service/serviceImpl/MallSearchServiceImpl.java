@@ -275,7 +275,7 @@ public class MallSearchServiceImpl implements IMallSearchService {
             }).collect(Collectors.toList());
             SearchResult.AttrVo attrVo = new SearchResult.AttrVo();
             attrVo.setAttrId(attrId);
-            attrVo.setName(attrName);
+            attrVo.setAttrName(attrName);
             attrVo.setAttrValue(attrValues);
             attrVos.add(attrVo);
         }
@@ -298,8 +298,11 @@ public class MallSearchServiceImpl implements IMallSearchService {
         //设置商品分类
         result.setCatalogs(catalogVos);
 
-
-
+        List<Integer> pageNavs=new ArrayList<>();
+        for(int i=1;i<=totalPage;i++){
+            pageNavs.add(i);
+        }
+        result.setPageNavs(pageNavs);
         return result;
     }
 }

@@ -12,6 +12,7 @@ public class SearchResult {
     private Integer pageNum;//当前页
     private Long total;//总记录数
     private Integer totalPages;//总页码
+    private List<Integer>pageNavs;//导航页码
     private List<BrandVo> brands;//当前查询到的结果，所有涉及到的品牌
     private List<AttrVo> attrs;//当前查询到的结果，所有涉及到的属性
     private List<CatalogVo> catalogs;//当前查询到的结果，所有涉及到的分类
@@ -31,7 +32,7 @@ public class SearchResult {
         //属性id
         private Long attrId;
         //属性名
-        private String name;
+        private String attrName;
         //属性值
         private List<String> attrValue;
     }
