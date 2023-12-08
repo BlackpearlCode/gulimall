@@ -1,14 +1,19 @@
 package com.es.service.serviceImpl;
 
 
+
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.es.constant.EsConstant;
 import com.es.feign.ProductFeign;
 import com.es.service.IMallSearchService;
 import com.es.vo.AttrResponseVo;
+import com.es.vo.BrandVo;
 import com.es.vo.SearchParam;
 import com.es.vo.SearchResult;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.gson.Gson;
 import com.gulimall.common.es.SkuEsModel;
 import com.gulimall.common.utils.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +48,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -223,7 +229,7 @@ public class MallSearchServiceImpl implements IMallSearchService {
      * @param response
      * @return
      */
-    private SearchResult buildSearchResult(SearchResponse response,SearchParam param){
+    private SearchResult buildSearchResult(SearchResponse response,SearchParam param) throws JsonProcessingException {
         SearchResult result = new SearchResult();
         SearchHits hits = response.getHits();
         List<SkuEsModel> skuEsModelList=new ArrayList<>();
@@ -320,8 +326,12 @@ public class MallSearchServiceImpl implements IMallSearchService {
                 String[] s = attr.split("_");
                 navVo.setNavValue(s[1]);
                 Result r = productFeign.info(Long.parseLong(s[0]));
+                result.getAttrIds().add(Long.parseLong(s[0]));
                 if (r.getCode() == 0) {
-                    AttrResponseVo data = (AttrResponseVo) r.getData("attr", new TypeReference<AttrResponseVo>() {
+                    Gson gson = new Gson();
+                    Object attrInfo = r.get("attr");
+                    String json = gson.toJson(attrInfo);
+                    AttrResponseVo data = JSON.parseObject(json, new TypeReference<AttrResponseVo>() {
                     });
                     navVo.setNavName(data.getAttrName());
                 } else {
@@ -330,15 +340,7 @@ public class MallSearchServiceImpl implements IMallSearchService {
 
                 //2、取消了这个面包屑以后，我们要跳转到哪个地方，将请求的地址url里面的当前置空
                 //拿到所有的查询条件，去掉当前
-                String encode = null;
-                try {
-                    encode = URLEncoder.encode(attr,"UTF-8");
-                    encode.replace("+","%20");  //浏览器对空格的编码和Java不一样，差异化处理
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                String str=param.get_queryString().replace("(","%28").replace(")","%29");
-                String replace = str.replace("&attrs=" + encode, "");
+                String replace = replaceQueryString(param, attr,"attrs");
                 navVo.setLink("http://search.onlineshopping.com/list.html?" + replace);
 
                 return navVo;
@@ -346,9 +348,45 @@ public class MallSearchServiceImpl implements IMallSearchService {
 
             result.setNavs(collect);
         }
-
+        //品牌，分类
+        if(!CollectionUtils.isEmpty(param.getBrandId())){
+            List<SearchResult.NavNo> navs = result.getNavs();
+            SearchResult.NavNo navNo = new SearchResult.NavNo();
+            navNo.setNavName("品牌");
+            //TODO 远程查询所有品牌
+            Result r = productFeign.brandInfoByIds(param.getBrandId());
+            if(r.getCode()==0){
+                Gson gson = new Gson();
+                Object brand = r.get("brand");
+                String json = gson.toJson(brand);
+                List<BrandVo> brandVoList = JSON.parseObject(json, new TypeReference<List<BrandVo>>() {
+                });
+                StringBuffer buffer = new StringBuffer();
+                String replace="";
+                for (BrandVo brandVo : brandVoList) {
+                    buffer.append(brandVo.getName()+";");
+                    replace=replaceQueryString( param,  brandVo.getBrandId()+"", "brandId");
+                }
+                navNo.setNavValue(buffer.toString());
+                navNo.setLink("http://search.onlineshopping.com/list.html?" + replace);
+            }
+            navs.add(navNo);
+        }
 
 
         return result;
+    }
+
+    private static String replaceQueryString(SearchParam param, String value,String key) {
+        String encode = null;
+        try {
+            encode = URLEncoder.encode(value,"UTF-8");
+            encode.replace("+","%20");  //浏览器对空格的编码和Java不一样，差异化处理
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String str= param.get_queryString().replace("(","%28").replace(")","%29");
+        String replace = str.replace("&"+key+"=" + encode, "");
+        return replace;
     }
 }

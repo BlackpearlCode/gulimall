@@ -73,5 +73,10 @@ public class PmsBrandServiceImpl implements PmsBrandService {
         return pageEntity;
     }
 
+    @Override
+    public List<PmsBrand> getBrands(List<Long> ids) {
+        return pmsBrandMapper.getBrands(ids);
+    }
+
 
 }

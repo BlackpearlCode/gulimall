@@ -2,6 +2,7 @@ package com.gulimall.product.mapper;
 
 import com.gulimall.product.entity.PmsBrand;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -26,6 +27,5 @@ public interface PmsBrandMapper {
     List<PmsBrand> selectByName(String name);
 
 
-
-
+    List<PmsBrand> getBrands(@Param("ids") List<Long> ids);
 }

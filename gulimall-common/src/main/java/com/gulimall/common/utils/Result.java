@@ -5,8 +5,15 @@ package com.gulimall.common.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 public class Result<T> extends HashMap<String, Object> {
@@ -44,14 +51,16 @@ public class Result<T> extends HashMap<String, Object> {
     }
 
 
-    //利用fastjson进行反序列化
-    public <T> T getData(String key, TypeReference<T> typeReference) {
+
+
+
+    //利用fastjson进行逆转
+    public <T> T getData(String key,TypeReference<T> typeReference) {
         Object data = get(key);	//默认是map
         String jsonString = JSON.toJSONString(data);
         T t = JSON.parseObject(jsonString, typeReference);
         return t;
     }
-
 
 
 }

@@ -1,8 +1,14 @@
 package com.es.vo;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import com.gulimall.common.es.SkuEsModel;
 import lombok.Data;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -19,7 +25,8 @@ public class SearchResult {
     //==============以上是返回给页面的所有信息=========================
     
     //面包屑导航
-    private List<NavNo> navs;
+    private List<NavNo> navs=new ArrayList<>();
+    private List<Long> attrIds=new ArrayList<>();
     @Data
     public static class NavNo{
         //导航名
@@ -56,4 +63,5 @@ public class SearchResult {
         //商品分类名称
         private String catalogName;
     }
+
 }

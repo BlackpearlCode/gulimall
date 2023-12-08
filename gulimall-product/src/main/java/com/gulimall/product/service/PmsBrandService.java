@@ -33,11 +33,5 @@ public interface PmsBrandService  {
     PageEntity selectByName(int page, int limit,String name);
 
 
-
-
-
-
-
-
-
+    List<PmsBrand> getBrands(List<Long> ids);
 }

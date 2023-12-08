@@ -13,10 +13,8 @@ import com.gulimall.product.service.impl.PmsBrandServiceImpl;
 import com.gulimall.product.service.impl.PmsCategoryBrandRelationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -85,10 +83,19 @@ public class BrandController {
     }
 
     //通过品牌Id查询品牌信息
-    @RequestMapping("/info/{brandId}")
+    @RequestMapping("/infos/{brandId}")
     public Result brandInfoById(@PathVariable("brandId") String id){
         PmsBrand pmsBrand = brandService.selectByPrimaryKey(Long.valueOf(id));
         return  Result.r(BizCodeEnum.OK.getCode(),BizCodeEnum.OK.getMsg()).put("brand",pmsBrand);
+
+    }
+
+
+    //查询品牌信息
+    @RequestMapping("/infos")
+    public Result brandInfoByIds(@RequestParam List<Long> brandIds){
+        List<PmsBrand> brands=brandService.getBrands(brandIds);
+        return  Result.r(BizCodeEnum.OK.getCode(),BizCodeEnum.OK.getMsg()).put("brand",brands);
 
     }
 
