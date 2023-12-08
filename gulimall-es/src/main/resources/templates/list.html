@@ -17,7 +17,7 @@
     <div class="header_head_box">
         <b class="header_head_p">
             <div style="overflow: hidden">
-                <a href="http://gulimall.com" class="header_head_p_a1" style="width:73px;">
+                <a href="http://onlineshopping.com" class="header_head_p_a1" style="width:73px;">
                     谷粒商城首页
                 </a>
                 <a href="/static/search/#" class="header_head_p_a">
@@ -64,11 +64,11 @@
         </b>
         <ul>
             <li>
-                <a th:if="${session.loginUser == null}" href="http://auth.gulimall.com/login.html" class="li_2">你好，请登录</a>
+                <a th:if="${session.loginUser == null}" href="http://auth.onlineshopping.com/login.html" class="li_2">你好，请登录</a>
                 <a th:if="${session.loginUser != null}">欢迎, [[${session.loginUser.nickname}]]</a>
             </li>
             <li>
-                <a th:if="${session.loginUser == null}" href="http://auth.gulimall.com/reg.html" style="color: red;">免费注册</a>
+                <a th:if="${session.loginUser == null}" href="http://auth.onlineshopping.com/reg.html" style="color: red;">免费注册</a>
             </li>
             <span>|</span>
             <li>
@@ -400,7 +400,7 @@
 <!--搜索导航-->
 <div class="header_sous">
     <div class="logo">
-        <a href="http://gulimall.com"><img src="/static/search/./image/logo1.jpg" alt=""></a>
+        <a href="http://onlineshopping.com"><img src="/static/search/./image/logo1.jpg" alt=""></a>
     </div>
     <div class="header_form">
         <input id="keyword_input" type="text" placeholder="手机" th:value="${param.keyword}"/>
@@ -408,7 +408,7 @@
     </div>
     <div class="header_ico">
         <div class="header_gw">
-            <span><a href="http://cart.gulimall.com/cart.html">我的购物车</a></span>
+            <span><a href="http://cart.onlineshopping.com/cart.html">我的购物车</a></span>
             <img src="/static/search/image/settleup-@1x.png"/>
             <span>0</span>
         </div>
@@ -768,7 +768,7 @@
         </div>
         <div class="JD_ipone_one c">
             <!-- 遍历面包屑功能 -->
-<!--            <a th:href="" th:each=""><span th:text=""></span>：<span th:text=""></span> x</a>-->
+            <a th:href="${nav.link}" th:each="nav:${result.navs}"><span th:text="${nav.navName}"></span>：<span th:text="${nav.navValue}"></span> x</a>
         </div>
         <i><img src="/static/search/image/right-@1x.png" alt=""></i>
     </div>
@@ -1060,19 +1060,19 @@
                                th:attr="style=${(#strings.isEmpty(p) || #strings.startsWith(p,'hotScore')) ?
                                    'color: #fff; border-color: #e4393c; background: #e4393c;':'color: #333; border-color: #ccc; background: #fff;' }">
                                 综合排序[[${(!#strings.isEmpty(p) && #strings.startsWith(p,'hotScore') &&
-                                #strings.endsWith(p,'desc')) ?'↓':'↑' }]]</a>
+                                #strings.endsWith(p,'desc')) ?'↑':'↓' }]]</a>
                             <a sort="saleCount"
                                th:class="${(!#strings.isEmpty(p) && #strings.startsWith(p,'saleCount') && #strings.endsWith(p,'desc')) ? 'sort_a desc' : 'sort_a'}"
                                th:attr="style=${(!#strings.isEmpty(p) && #strings.startsWith(p,'saleCount')) ?
                                    'color: #fff; border-color: #e4393c; background: #e4393c;':'color: #333; border-color: #ccc; background: #fff;' }">
                                 销量[[${(!#strings.isEmpty(p) && #strings.startsWith(p,'saleCount') &&
-                                #strings.endsWith(p,'desc'))?'↓':'↑' }]]</a>
+                                #strings.endsWith(p,'desc'))?'↑':'↓' }]]</a>
                             <a sort="skuPrice"
                                th:class="${(!#strings.isEmpty(p) && #strings.startsWith(p,'skuPrice') && #strings.endsWith(p,'desc')) ? 'sort_a desc' : 'sort_a'}"
                                th:attr="style=${(!#strings.isEmpty(p) && #strings.startsWith(p,'skuPrice')) ?
                                    'color: #fff; border-color: #e4393c; background: #e4393c;':'color: #333; border-color: #ccc; background: #fff;' }">
                                 价格[[${(!#strings.isEmpty(p) && #strings.startsWith(p,'skuPrice') &&
-                                #strings.endsWith(p,'desc'))?'↓':'↑' }]]</a>
+                                #strings.endsWith(p,'desc'))?'↑':'↓' }]]</a>
                             <a sort="hotScore" class="sort_a">评论分</a>
                             <a sort="hotScore" class="sort_a">上架时间</a>
                             <input id="skuPriceFrom" type="number"
@@ -1214,7 +1214,7 @@
                                 <a href="/static/search/#">关注</a>
                             </div>
                             <p class="da">
-                                <a th:href="|http://item.gulimall.com/${product.skuId}.html|" >
+                                <a th:href="|http://item.onlineshopping.com/${product.skuId}.html|" >
                                     <img   class="dim" th:src="${product.skuImg}">
                                 </a>
                             </p>
