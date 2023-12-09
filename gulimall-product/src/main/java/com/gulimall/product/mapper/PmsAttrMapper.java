@@ -2,6 +2,8 @@ package com.gulimall.product.mapper;
 
 import com.gulimall.product.entity.PmsAttr;
 import com.gulimall.product.entity.PmsAttrGroup;
+import com.gulimall.product.vo.ItemVo;
+import com.gulimall.product.vo.SpuItemAttrGroupVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -39,4 +41,6 @@ public interface PmsAttrMapper {
     PmsAttr selectAttrNameByAttrIdAndAttrType(Long item, int attrType);
 
     Set<Long> selectBySearchType(Long type);
+
+    List<SpuItemAttrGroupVo> getAttrGroupWithAttrsBySpuId(@Param("catalogId") Long catalogId, @Param("spuId") Long spuId);
 }

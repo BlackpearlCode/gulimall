@@ -101,4 +101,8 @@
         (#{item.skuId},#{item.imgUrl},#{item.defaultImg})
       </foreach>
     </insert>
+
+  <select id="selectBySkuId" resultMap="BaseResultMap">
+    select * from pms_sku_images where sku_id=#{skuId,jdbcType=BIGINT}
+  </select>
 </mapper>

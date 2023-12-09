@@ -214,4 +214,30 @@
   <select id="selectBySearchType" resultType="java.lang.Long">
     select attr_id from pms_attr where search_type=#{type,jdbcType=BIGINT}
     </select>
+  <resultMap id="spuItemAttrGroupVo" type="com.gulimall.product.vo.SpuItemAttrGroupVo">
+    <result property="groupName" column="attr_group_name"></result>
+    <collection property="attrs" ofType="com.gulimall.product.vo.Attr">
+      <result column="attr_id" property="attrId"></result>
+      <result column="attr_name" property="attrName"></result>
+      <result column="attr_value" property="attrValue"></result>
+    </collection>
+  </resultMap>
+
+  <select id="getAttrGroupWithAttrsBySpuId" resultMap="spuItemAttrGroupVo">
+    SELECT
+<!--      pms_product_attr_value.spu_id,-->
+      pms_attr_group.attr_group_name ,
+<!--      pms_attr_attrgroup_relation.attr_group_id,-->
+      pms_attr.attr_id ,
+      pms_attr.attr_name ,
+      pms_product_attr_value.attr_value
+    FROM
+      pms_attr_group
+        LEFT JOIN pms_attr_attrgroup_relation  ON pms_attr_group.attr_group_id =pms_attr_attrgroup_relation.attr_group_id
+        LEFT JOIN pms_attr ON pms_attr.attr_id = pms_attr_attrgroup_relation.attr_id
+        LEFT JOIN pms_product_attr_value ON pms_product_attr_value.attr_id = pms_attr.attr_id
+    WHERE
+      pms_attr.catelog_id = #{catalogId,jdbcType=BIGINT}
+      AND pms_product_attr_value.spu_id = #{spuId,jdbcType=BIGINT}
+    </select>
 </mapper>

@@ -10,9 +10,7 @@ import com.gulimall.product.mapper.PmsAttrGroupMapper;
 import com.gulimall.product.mapper.PmsAttrMapper;
 import com.gulimall.product.mapper.PmsCategoryMapper;
 import com.gulimall.product.service.PmsAttrService;
-import com.gulimall.product.vo.AttrNoRelationVo;
-import com.gulimall.product.vo.AttrRespVo;
-import com.gulimall.product.vo.AttrInfoVo;
+import com.gulimall.product.vo.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
@@ -187,6 +185,11 @@ public class PmsAttrServiceImpl implements PmsAttrService {
     @Override
     public Set<Long> selectBySearchType(Long type) {
         return pmsAttrMapper.selectBySearchType(type);
+    }
+
+    @Override
+    public List<SpuItemAttrGroupVo> getAttrGroupWithAttrsBySpuId(Long catalogId, Long spuId) {
+        return pmsAttrMapper.getAttrGroupWithAttrsBySpuId(catalogId,spuId);
     }
 
 

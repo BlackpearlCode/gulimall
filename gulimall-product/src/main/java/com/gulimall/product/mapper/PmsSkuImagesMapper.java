@@ -21,4 +21,6 @@ public interface PmsSkuImagesMapper {
     int updateByPrimaryKey(PmsSkuImages record);
 
     void batchSave(@Param("imagesList") List<PmsSkuImages> imagesList);
+
+    List<PmsSkuImages> selectBySkuId(Long skuId);
 }

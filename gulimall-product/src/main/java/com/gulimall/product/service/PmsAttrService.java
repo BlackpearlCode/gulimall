@@ -3,6 +3,7 @@ package com.gulimall.product.service;
 import com.gulimall.common.utils.PageEntity;
 import com.gulimall.product.entity.PmsAttr;
 import com.gulimall.product.vo.AttrInfoVo;
+import com.gulimall.product.vo.SpuItemAttrGroupVo;
 
 import java.util.List;
 import java.util.Set;
@@ -36,4 +37,6 @@ public interface PmsAttrService{
 
     //查询可以被检索的规格属性
     Set<Long> selectBySearchType(Long type);
+
+    List<SpuItemAttrGroupVo> getAttrGroupWithAttrsBySpuId(Long catalogId, Long spuId);
 }

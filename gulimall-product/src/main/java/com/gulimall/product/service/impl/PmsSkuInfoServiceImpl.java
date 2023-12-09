@@ -5,15 +5,14 @@ import com.github.pagehelper.PageInfo;
 import com.gulimall.common.to.MemberPriceTo;
 import com.gulimall.common.to.SkuReductionTo;
 import com.gulimall.common.utils.PageEntity;
-import com.gulimall.product.entity.PmsSkuImages;
-import com.gulimall.product.entity.PmsSkuInfo;
-import com.gulimall.product.entity.PmsSkuSaleAttrValue;
-import com.gulimall.product.entity.PmsSpuInfo;
+import com.gulimall.product.entity.*;
 import com.gulimall.product.feign.CouponFeignService;
 import com.gulimall.product.mapper.PmsSkuImagesMapper;
 import com.gulimall.product.mapper.PmsSkuInfoMapper;
 import com.gulimall.product.mapper.PmsSkuSaleAttrValueMapper;
+import com.gulimall.product.service.PmsAttrService;
 import com.gulimall.product.service.PmsSkuInfoService;
+import com.gulimall.product.service.PmsSpuInfoDescService;
 import com.gulimall.product.vo.*;
 import com.mysql.cj.util.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -39,6 +38,12 @@ public class PmsSkuInfoServiceImpl implements PmsSkuInfoService {
     private PmsSkuSaleAttrValueMapper pmsSkuSaleAttrValueMapper;
     @Autowired
     private CouponFeignService couponFeignService;
+
+    @Autowired
+    private PmsSpuInfoDescService spuInfoDescService;
+
+    @Autowired
+    private PmsAttrService attrService;
 
     @Override
     public int deleteByPrimaryKey(Long skuId) {
@@ -163,6 +168,28 @@ public class PmsSkuInfoServiceImpl implements PmsSkuInfoService {
     public List<PmsSkuInfo> selectBySpuId(Long spuId) {
         List<PmsSkuInfo> skuInfos = pmsSkuInfoMapper.selectBySpuId(spuId);
         return skuInfos;
+    }
+
+    @Override
+    public ItemVo item(Long skuId) {
+        ItemVo item=new ItemVo();
+        //获取sku基本信息
+        PmsSkuInfo pmsSkuInfo = pmsSkuInfoMapper.selectByPrimaryKey(skuId);
+        item.setInfo(pmsSkuInfo);
+        //获取sku图片信息
+        List<PmsSkuImages> images=pmsSkuImagesMapper.selectBySkuId(skuId);
+        item.setImages(images);
+        //获取spu的销售组合
+
+        //获取spu的介绍
+        Long spuId = pmsSkuInfo.getSpuId();
+        PmsSpuInfoDesc pmsSpuInfoDesc = spuInfoDescService.selectByPrimaryKey(spuId);
+        item.setDesc(pmsSpuInfoDesc);
+        //获取spu的规格参数信息
+        Long catalogId = pmsSkuInfo.getCatalogId();
+        List<SpuItemAttrGroupVo> attrGroupVos =attrService.getAttrGroupWithAttrsBySpuId(catalogId,spuId);
+        item.setGroupAttrs(attrGroupVos);
+        return null;
     }
 
 
