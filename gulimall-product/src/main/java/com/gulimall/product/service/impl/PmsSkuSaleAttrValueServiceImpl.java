@@ -5,8 +5,10 @@ import com.gulimall.product.mapper.PmsAttrGroupMapper;
 import com.gulimall.product.mapper.PmsAttrMapper;
 import com.gulimall.product.mapper.PmsSkuSaleAttrValueMapper;
 import com.gulimall.product.service.PmsSkuSaleAttrValueService;
+import com.gulimall.product.vo.SkuItemSaleAttrVo;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class PmsSkuSaleAttrValueServiceImpl implements PmsSkuSaleAttrValueService {
@@ -49,6 +51,12 @@ public class PmsSkuSaleAttrValueServiceImpl implements PmsSkuSaleAttrValueServic
     @Override
     public int updateByPrimaryKey(PmsSkuSaleAttrValue record) {
         return pmsSkuSaleAttrValueMapper.updateByPrimaryKey(record);
+    }
+
+    @Override
+    public List<SkuItemSaleAttrVo> getSaleAttrsBySpuId(Long spuId) {
+        List<SkuItemSaleAttrVo> saleAttrVos=pmsSkuSaleAttrValueMapper.getSaleAttrsBySpuId(spuId);
+        return saleAttrVos;
     }
 
 }

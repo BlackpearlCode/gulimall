@@ -12,6 +12,7 @@ import com.gulimall.product.mapper.PmsSkuInfoMapper;
 import com.gulimall.product.mapper.PmsSkuSaleAttrValueMapper;
 import com.gulimall.product.service.PmsAttrService;
 import com.gulimall.product.service.PmsSkuInfoService;
+import com.gulimall.product.service.PmsSkuSaleAttrValueService;
 import com.gulimall.product.service.PmsSpuInfoDescService;
 import com.gulimall.product.vo.*;
 import com.mysql.cj.util.StringUtils;
@@ -44,6 +45,9 @@ public class PmsSkuInfoServiceImpl implements PmsSkuInfoService {
 
     @Autowired
     private PmsAttrService attrService;
+
+    @Autowired
+    private PmsSkuSaleAttrValueService skuSaleAttrValueService;
 
     @Override
     public int deleteByPrimaryKey(Long skuId) {
@@ -179,17 +183,18 @@ public class PmsSkuInfoServiceImpl implements PmsSkuInfoService {
         //获取sku图片信息
         List<PmsSkuImages> images=pmsSkuImagesMapper.selectBySkuId(skuId);
         item.setImages(images);
-        //获取spu的销售组合
-
-        //获取spu的介绍
         Long spuId = pmsSkuInfo.getSpuId();
+        //获取spu的销售组合
+        List<SkuItemSaleAttrVo> saleAttrVos=skuSaleAttrValueService.getSaleAttrsBySpuId(spuId);
+        item.setSaleAttr(saleAttrVos);
+        //获取spu的介绍
         PmsSpuInfoDesc pmsSpuInfoDesc = spuInfoDescService.selectByPrimaryKey(spuId);
         item.setDesc(pmsSpuInfoDesc);
         //获取spu的规格参数信息
         Long catalogId = pmsSkuInfo.getCatalogId();
         List<SpuItemAttrGroupVo> attrGroupVos =attrService.getAttrGroupWithAttrsBySpuId(catalogId,spuId);
         item.setGroupAttrs(attrGroupVos);
-        return null;
+        return item;
     }
 
 

@@ -111,4 +111,19 @@
         (#{item.skuId},#{item.attrId},#{item.attrName},#{item.attrValue})
       </foreach>
     </insert>
+
+  <select id="getSaleAttrsBySpuId" resultType="com.gulimall.product.vo.SkuItemSaleAttrVo">
+    SELECT
+      pms_sku_sale_attr_value.attr_id attrId,
+      pms_sku_sale_attr_value.attr_name attrName,
+      GROUP_CONCAT( DISTINCT pms_sku_sale_attr_value.attr_value ) attrValues
+    FROM
+      pms_sku_info
+        LEFT JOIN pms_sku_sale_attr_value ON pms_sku_sale_attr_value.sku_id = pms_sku_info.sku_id
+    WHERE
+      pms_sku_info.spu_id =#{spuId,jdbcType=BIGINT}
+    GROUP BY
+      pms_sku_sale_attr_value.attr_id,
+      pms_sku_sale_attr_value.attr_name
+    </select>
 </mapper>

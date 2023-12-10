@@ -1,6 +1,7 @@
 package com.gulimall.product.mapper;
 
 import com.gulimall.product.entity.PmsSkuSaleAttrValue;
+import com.gulimall.product.vo.SkuItemSaleAttrVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -22,4 +23,6 @@ public interface PmsSkuSaleAttrValueMapper {
 
 
     void batchSave(@Param("saleAttrList") List<PmsSkuSaleAttrValue> saleAttrList);
+
+    List<SkuItemSaleAttrVo> getSaleAttrsBySpuId(@Param("spuId") Long spuId);
 }

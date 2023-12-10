@@ -1,6 +1,9 @@
 package com.gulimall.product.service;
 
 import com.gulimall.product.entity.PmsSkuSaleAttrValue;
+import com.gulimall.product.vo.SkuItemSaleAttrVo;
+
+import java.util.List;
 
 public interface PmsSkuSaleAttrValueService{
 
@@ -18,4 +21,5 @@ public interface PmsSkuSaleAttrValueService{
     int updateByPrimaryKey(PmsSkuSaleAttrValue record);
 
 
+    List<SkuItemSaleAttrVo> getSaleAttrsBySpuId(Long spuId);
 }
