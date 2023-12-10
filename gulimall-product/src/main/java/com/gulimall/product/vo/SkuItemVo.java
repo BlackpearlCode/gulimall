@@ -7,10 +7,12 @@ import lombok.Data;
 
 import java.util.List;
 @Data
-public class ItemVo {
+public class SkuItemVo {
 
     //sku基本信息
     private PmsSkuInfo info;
+    //是否有货；true：有货；false：无货
+    boolean hasStock=true;
     //sku图片信息
     private List<PmsSkuImages> images;
     //获取spu的销售属性组合

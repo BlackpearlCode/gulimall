@@ -3,7 +3,7 @@ package com.gulimall.product.service;
 import com.gulimall.common.utils.PageEntity;
 import com.gulimall.product.entity.PmsSkuInfo;
 import com.gulimall.product.entity.PmsSpuInfo;
-import com.gulimall.product.vo.ItemVo;
+import com.gulimall.product.vo.SkuItemVo;
 import com.gulimall.product.vo.Skus;
 
 import java.util.List;
@@ -31,5 +31,5 @@ public interface PmsSkuInfoService{
     List<PmsSkuInfo> selectBySpuId(Long spuId);
 
 
-    ItemVo item(Long skuId);
+    SkuItemVo item(Long skuId);
 }

@@ -1,8 +1,6 @@
 package com.gulimall.product.mapper;
 
 import com.gulimall.product.entity.PmsAttr;
-import com.gulimall.product.entity.PmsAttrGroup;
-import com.gulimall.product.vo.ItemVo;
 import com.gulimall.product.vo.SpuItemAttrGroupVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
