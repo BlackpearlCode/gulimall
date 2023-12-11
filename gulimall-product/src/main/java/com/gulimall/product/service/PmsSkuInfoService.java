@@ -8,6 +8,7 @@ import com.gulimall.product.vo.Skus;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public interface PmsSkuInfoService{
 
@@ -31,5 +32,5 @@ public interface PmsSkuInfoService{
     List<PmsSkuInfo> selectBySpuId(Long spuId);
 
 
-    SkuItemVo item(Long skuId);
+    SkuItemVo item(Long skuId) throws ExecutionException, InterruptedException;
 }

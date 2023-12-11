@@ -74,6 +74,12 @@
             <version>3.23.1</version>
         </dependency>
 
+        <!--属性提示工具-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+        </dependency>
+
 
     </dependencies>
     <dependencyManagement>

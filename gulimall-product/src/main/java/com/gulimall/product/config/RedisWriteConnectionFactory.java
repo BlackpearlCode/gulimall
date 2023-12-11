@@ -1,4 +1,4 @@
-package com.gulimall.product.redis.config;
+package com.gulimall.product.config;
 
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;

@@ -3,8 +3,8 @@ package com.gulimall.product.redis.utils;
 
 
 
-import com.gulimall.product.redis.config.RedisReadConnectionFactory;
-import com.gulimall.product.redis.config.RedisWriteConnectionFactory;
+import com.gulimall.product.config.RedisReadConnectionFactory;
+import com.gulimall.product.config.RedisWriteConnectionFactory;
 import com.gulimall.product.redis.service.serviceImpl.RedisReadServiceImpl;
 import com.gulimall.product.redis.service.serviceImpl.RedisWriteServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;

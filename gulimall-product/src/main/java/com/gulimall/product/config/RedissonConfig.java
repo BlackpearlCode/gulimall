@@ -1,4 +1,4 @@
-package com.gulimall.product.redis.config;
+package com.gulimall.product.config;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
