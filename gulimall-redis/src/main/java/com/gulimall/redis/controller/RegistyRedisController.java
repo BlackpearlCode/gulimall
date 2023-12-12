@@ -22,4 +22,9 @@ public class RegistyRedisController {
     public String getCode(@RequestParam("key") String key){
         return (String)redisUtil.get(key);
     }
+
+    @RequestMapping("/delCode")
+    public void delCode(@RequestParam("key") String key){
+        redisUtil.del(key);
+    }
 }

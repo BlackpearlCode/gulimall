@@ -23,4 +23,6 @@ public interface MemberLevelMapper {
     List<MemberLevel> selectAll(String key);
 
     void batchDeleteById(@Param("ids")List<Long> ids);
+
+    MemberLevel getDefaultLevel();
 }

@@ -1,6 +1,10 @@
 package com.example.member.service;
 
 import com.example.member.entity.Member;
+import com.example.member.exception.PhoneExistException;
+import com.example.member.exception.UsernameExistException;
+import com.example.member.vo.MemberRegistVo;
+
 public interface MemberService{
 
 
@@ -15,5 +19,11 @@ public interface MemberService{
     int updateByPrimaryKeySelective(Member record);
 
     int updateByPrimaryKey(Member record);
+
+    void regist(MemberRegistVo vo);
+    //校验手机号是否唯一
+    void checkPhoneUnique(String phone) throws PhoneExistException;
+    //校验用户名是否唯一
+    void checkUsernameUnique(String username) throws UsernameExistException;
 
 }

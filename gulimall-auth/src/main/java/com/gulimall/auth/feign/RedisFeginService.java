@@ -12,4 +12,7 @@ public interface RedisFeginService {
 
     @RequestMapping("/registy/redis/getCode")
     String getCode(@RequestParam("key") String key);
+
+    @RequestMapping("/registy/redis/delCode")
+    void delCode(@RequestParam("key") String key);
 }

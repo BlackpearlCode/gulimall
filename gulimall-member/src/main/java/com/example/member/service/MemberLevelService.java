@@ -23,4 +23,7 @@ public interface MemberLevelService{
     PageEntity selectAll(String key, int page, int limit);
 
     void batchById(List<Long> ids);
+
+    //获取会员默认的等级
+    MemberLevel getDefaultLevel();
 }

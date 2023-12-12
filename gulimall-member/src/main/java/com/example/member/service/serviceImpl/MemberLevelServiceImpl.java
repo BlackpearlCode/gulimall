@@ -62,4 +62,10 @@ public class MemberLevelServiceImpl implements MemberLevelService{
         memberLevelMapper.batchDeleteById(ids);
     }
 
+    @Override
+    public MemberLevel getDefaultLevel() {
+        return memberLevelMapper.getDefaultLevel();
+
+    }
+
 }

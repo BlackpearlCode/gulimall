@@ -168,4 +168,8 @@
       #{item}
     </foreach>
   </delete>
+
+  <select id="getDefaultLevel" resultMap="BaseResultMap">
+    select * from ums_member_level where default_status=1
+    </select>
 </mapper>
