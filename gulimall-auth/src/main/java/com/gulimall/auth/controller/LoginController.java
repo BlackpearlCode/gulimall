@@ -1,7 +1,6 @@
 package com.gulimall.auth.controller;
 
 
-import com.alibaba.fastjson.TypeReference;
 import com.gulimall.auth.feign.MemberFeignService;
 import com.gulimall.auth.feign.RedisFeginService;
 import com.gulimall.auth.feign.ThirdPartyFeginService;
@@ -62,7 +61,7 @@ public class LoginController {
         String codeString = uuid + "_" + System.currentTimeMillis();
         String code="{'code':"+uuid+"}";
         //redis缓存验证码，防止同一个手机号在60秒内再次发送验证码
-        redisFeginService.saveCode(phone,codeString,3000);
+        redisFeginService.saveCode(phone,codeString,300);
         thirdPartyFeginService.sendCode(phone,code);
         return Result.ok();
     }
