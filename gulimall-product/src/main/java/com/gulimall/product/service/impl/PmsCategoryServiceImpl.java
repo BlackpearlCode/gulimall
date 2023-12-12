@@ -1,12 +1,11 @@
 package com.gulimall.product.service.impl;
 
 import com.gulimall.product.entity.PmsCategory;
+import com.gulimall.product.feign.RedisFeignService;
 import com.gulimall.product.mapper.PmsCategoryMapper;
-import com.gulimall.product.redis.aop.GmallCache;
-import com.gulimall.product.redis.utils.RedisUtil;
+import com.gulimall.product.aop.GmallCache;
 import com.gulimall.product.service.PmsCategoryService;
 import com.gulimall.product.vo.Catelog2Vo;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
@@ -24,7 +23,7 @@ public class PmsCategoryServiceImpl implements PmsCategoryService {
     private PmsCategoryMapper pmsCategoryMapper;
 
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisFeignService redisUtil;
 
 
     @Override

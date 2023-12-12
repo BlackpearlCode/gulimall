@@ -1,11 +1,13 @@
-package com.gulimall.product;
+package com.gulimall.redis;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class GulimallProductApplicationTests {
+class GulimallRedisApplicationTests {
 
-
+    @Test
+    void contextLoads() {
+    }
 
 }

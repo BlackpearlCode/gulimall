@@ -31,6 +31,7 @@
         <module>gulimall-ware</module>
         <module>gulimall-es</module>
         <module>gulimall-auth</module>
+        <module>gulimall-redis</module>
     </modules>
 
 </project>

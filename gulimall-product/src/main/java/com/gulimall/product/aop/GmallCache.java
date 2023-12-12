@@ -1,4 +1,4 @@
-package com.gulimall.product.redis.aop;
+package com.gulimall.product.aop;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

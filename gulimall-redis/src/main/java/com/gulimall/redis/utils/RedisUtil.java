@@ -1,14 +1,12 @@
-package com.gulimall.product.redis.utils;
+package com.gulimall.redis.utils;
 
 
 
-
-import com.gulimall.product.config.RedisReadConnectionFactory;
-import com.gulimall.product.config.RedisWriteConnectionFactory;
-import com.gulimall.product.redis.service.serviceImpl.RedisReadServiceImpl;
-import com.gulimall.product.redis.service.serviceImpl.RedisWriteServiceImpl;
+import com.gulimall.redis.config.RedisReadConnectionFactory;
+import com.gulimall.redis.config.RedisWriteConnectionFactory;
+import com.gulimall.redis.service.serviceImpl.RedisReadServiceImpl;
+import com.gulimall.redis.service.serviceImpl.RedisWriteServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Component;
@@ -24,11 +22,9 @@ import java.util.concurrent.TimeUnit;
  * redis工具类
  */
 @Component
-
 public final class RedisUtil {
 
-//    @Autowired
-//    private RedisTemplate<String, Object> redisTemplate;
+
     @Autowired
     private RedisWriteServiceImpl redisWrite;
     @Autowired
@@ -248,7 +244,7 @@ public final class RedisUtil {
      * @param key 键
      * @param map 对应多个键值
      */
-    public<T> boolean hmset(String key, Map<String, T> map) {
+    public boolean hmset(String key, Map<String, Object> map) {
         try {
             readTemplate().opsForHash().putAll(key, map);
             return true;

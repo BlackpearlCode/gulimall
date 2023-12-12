@@ -1,20 +1,17 @@
-package com.gulimall.product.redis.service.serviceImpl;
+package com.gulimall.redis.service.serviceImpl;
 
 
-
-
-
-import com.gulimall.product.config.RedisConfig;
-import com.gulimall.product.redis.service.RedisService;
+import com.gulimall.redis.config.RedisConfig;
+import com.gulimall.redis.service.RedisService;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 /**
- * redis从节点
+ * redis主节点
  */
 @Service
-public class RedisReadServiceImpl implements RedisService {
+public class RedisWriteServiceImpl implements RedisService {
 
 
 
@@ -30,6 +27,4 @@ public class RedisReadServiceImpl implements RedisService {
         LettuceConnectionFactory lettuceConnectionFactory = redisConfig.redisConnectionFactory();
         return redisConfig.redisTemplate(lettuceConnectionFactory);
     }
-
-
 }

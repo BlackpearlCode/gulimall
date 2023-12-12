@@ -1,6 +1,6 @@
-package com.gulimall.product.redis.aop;
+package com.gulimall.product.aop;
 
-import com.gulimall.product.redis.utils.RedisUtil;
+import com.gulimall.product.feign.RedisFeignService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -18,9 +18,11 @@ import java.util.Map;
 @Aspect
 public class GmallCacheAspect {
     @Autowired
-    private RedisUtil redisUtil;
-    @Autowired
     private RedissonClient redissonClient;
+    @Autowired
+    private RedisFeignService redisUtil;
+
+
 
     /**
      * 使用sop实现分布式锁和缓存
@@ -31,12 +33,12 @@ public class GmallCacheAspect {
      *    b.获取数据
      */
 
-    @Before("@annotation(com.gulimall.product.redis.aop.GmallCache)")
+    @Before("@annotation(com.gulimall.product.aop.GmallCache)")
     public void before(){
         System.out.println("进入AOP.......");
     }
 
-    @Around("@annotation(com.gulimall.product.redis.aop.GmallCache)")
+    @Around("@annotation(com.gulimall.product.aop.GmallCache)")
     public<T> Map<String,T> cacheGmallAspect(ProceedingJoinPoint joinPoint){
 
         //获取添加了注解的方法
@@ -96,7 +98,7 @@ public class GmallCacheAspect {
     //从缓存中获取数据
     private<T> Map<String, T> cacheHit(String key){
         //获取数据
-        Map<String, T> map= redisUtil.hmget(key);
+        Map<String, T> map= redisUtil.getCacheHit(key);
         if(map.isEmpty()){
             return null;
         }

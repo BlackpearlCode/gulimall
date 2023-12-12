@@ -1,4 +1,4 @@
-package com.gulimall.product.config;
+package com.gulimall.redis.config;
 
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;

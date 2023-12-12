@@ -1,0 +1,13 @@
+spring:
+    cloud:
+        nacos:
+            config:
+                server-addr: 47.99.142.201:8848
+                ext-config[0].data-id: redis.yml
+                ext-config[0].group: DEFAULT_GROUP
+                #动态刷新配置
+                ext-config[0].refresh: true
+                namespace: c5c83431-07c3-40ba-bbee-63ca3f5f1add
+            discovery:
+                server-addr: 47.99.142.201:8848
+

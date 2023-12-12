@@ -1,4 +1,4 @@
-package com.gulimall.product.redis.service;
+package com.gulimall.redis.service;
 
 import org.springframework.data.redis.core.RedisTemplate;
 
