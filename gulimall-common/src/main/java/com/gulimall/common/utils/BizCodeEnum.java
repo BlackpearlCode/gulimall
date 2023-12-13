@@ -10,7 +10,8 @@ public enum BizCodeEnum {
     ERROR(500,"ERROR"),
     PRODUCT_UP_EXCEPTION(11000,"商品上架异常"),
     USER_EXISTS_EXCEPTION(15001,"用户名已存在"),
-    PHONE_EXISTS_EXCEPTION(15002,"手机号已存在");
+    PHONE_EXISTS_EXCEPTION(15002,"手机号已存在"),
+    LOGINACCT_PASSWORD_EXCEPTION(15003,"账号或密码错误");
 
     private int code;
     private String msg;

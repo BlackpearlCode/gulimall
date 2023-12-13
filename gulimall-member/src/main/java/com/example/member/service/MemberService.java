@@ -3,6 +3,7 @@ package com.example.member.service;
 import com.example.member.entity.Member;
 import com.example.member.exception.PhoneExistException;
 import com.example.member.exception.UsernameExistException;
+import com.example.member.vo.MemberLoginVo;
 import com.example.member.vo.MemberRegistVo;
 
 public interface MemberService{
@@ -26,4 +27,5 @@ public interface MemberService{
     //校验用户名是否唯一
     void checkUsernameUnique(String username) throws UsernameExistException;
 
+    Member login(MemberLoginVo vo);
 }

@@ -253,4 +253,8 @@
   <select id="seleatUsernameISExist" resultType="java.lang.Integer">
     select count(*) from ums_member where username=#{username,jdbcType=VARCHAR}
   </select>
+
+  <select id="selectUsernameOrPhone" resultMap="BaseResultMap">
+    select * from ums_member where username=#{vo.loginacct,jdbcType=VARCHAR} or mobile=#{vo.loginacct,jdbcType=VARCHAR}
+    </select>
 </mapper>

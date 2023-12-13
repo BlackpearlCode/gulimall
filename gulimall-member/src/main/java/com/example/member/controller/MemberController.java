@@ -1,12 +1,15 @@
 package com.example.member.controller;
 
+import com.example.member.entity.Member;
 import com.example.member.exception.PhoneExistException;
 import com.example.member.exception.UsernameExistException;
 import com.example.member.service.MemberService;
+import com.example.member.vo.MemberLoginVo;
 import com.example.member.vo.MemberRegistVo;
 import com.gulimall.common.utils.BizCodeEnum;
 import com.gulimall.common.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,5 +31,15 @@ public class MemberController {
             return Result.error(BizCodeEnum.USER_EXISTS_EXCEPTION);
         }
         return Result.ok();
+    }
+
+    //会员登录
+    @PostMapping("/login")
+    public Result login(@RequestBody MemberLoginVo vo){
+        Member member=memberService.login(vo);
+        if(member!=null){
+            return Result.ok();
+        }
+        return Result.error(BizCodeEnum.LOGINACCT_PASSWORD_EXCEPTION);
     }
 }

@@ -1,7 +1,9 @@
 package com.example.member.mapper;
 
 import com.example.member.entity.Member;
+import com.example.member.vo.MemberLoginVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface MemberMapper {
@@ -20,4 +22,6 @@ public interface MemberMapper {
     int selectPhoneISExist(String phone);
 
     int seleatUsernameISExist(String username);
+
+    Member selectUsernameOrPhone(@Param("vo") MemberLoginVo vo);
 }

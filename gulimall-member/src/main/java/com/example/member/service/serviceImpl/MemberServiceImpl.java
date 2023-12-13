@@ -4,6 +4,7 @@ import com.example.member.entity.MemberLevel;
 import com.example.member.exception.PhoneExistException;
 import com.example.member.exception.UsernameExistException;
 import com.example.member.service.MemberLevelService;
+import com.example.member.vo.MemberLoginVo;
 import com.example.member.vo.MemberRegistVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -87,6 +88,23 @@ public class MemberServiceImpl implements MemberService{
             throw new UsernameExistException();
         }
 
+    }
+
+    @Override
+    public Member login(MemberLoginVo vo) {
+        Member memberInfo=memberMapper.selectUsernameOrPhone(vo);
+        if(memberInfo==null){
+            return null;
+        }
+        //获取数据库的password字段
+        String passwordDB = memberInfo.getPassword();
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        //2.密码匹配
+        boolean matches = passwordEncoder.matches(vo.getPassword(), passwordDB);
+        if(!matches){
+            return null;
+        }
+        return memberInfo;
     }
 
 }

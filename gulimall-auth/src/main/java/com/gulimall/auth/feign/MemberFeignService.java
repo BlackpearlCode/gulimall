@@ -1,8 +1,10 @@
 package com.gulimall.auth.feign;
 
+import com.gulimall.auth.vo.UserLoginVo;
 import com.gulimall.auth.vo.UserRegistVo;
 import com.gulimall.common.utils.Result;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -11,4 +13,7 @@ public interface MemberFeignService {
 
     @RequestMapping("/member/member/regist")
     Result regist(@RequestBody UserRegistVo vo);
+
+    @PostMapping("/member/member/login")
+    Result login(@RequestBody UserLoginVo vo);
 }
