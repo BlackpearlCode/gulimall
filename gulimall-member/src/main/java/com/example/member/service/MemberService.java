@@ -5,6 +5,9 @@ import com.example.member.exception.PhoneExistException;
 import com.example.member.exception.UsernameExistException;
 import com.example.member.vo.MemberLoginVo;
 import com.example.member.vo.MemberRegistVo;
+import com.example.member.vo.Oauth2UserInfo;
+
+import java.text.ParseException;
 
 public interface MemberService{
 
@@ -28,4 +31,6 @@ public interface MemberService{
     void checkUsernameUnique(String username) throws UsernameExistException;
 
     Member login(MemberLoginVo vo);
+
+    Member oauth2Login(Oauth2UserInfo userInfo) throws ParseException;
 }

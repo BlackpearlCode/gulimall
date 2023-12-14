@@ -103,5 +103,9 @@ public class Member implements Serializable {
     */
     private Date createTime;
 
+    private String socialUid;
+
+    private String accessToken;
+    private long expiresIn;
     private static final long serialVersionUID = 1L;
 }

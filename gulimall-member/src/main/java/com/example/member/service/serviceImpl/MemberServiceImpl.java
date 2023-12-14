@@ -6,6 +6,7 @@ import com.example.member.exception.UsernameExistException;
 import com.example.member.service.MemberLevelService;
 import com.example.member.vo.MemberLoginVo;
 import com.example.member.vo.MemberRegistVo;
+import com.example.member.vo.Oauth2UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,15 @@ import javax.annotation.Resource;
 import com.example.member.entity.Member;
 import com.example.member.mapper.MemberMapper;
 import com.example.member.service.MemberService;
+import org.springframework.util.StringUtils;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
 @Service
 public class MemberServiceImpl implements MemberService{
 
@@ -105,6 +115,55 @@ public class MemberServiceImpl implements MemberService{
             return null;
         }
         return memberInfo;
+    }
+
+    @Override
+    public Member oauth2Login(Oauth2UserInfo userInfo) throws ParseException {
+        //获取社交用户唯一标识
+        String socialUid = userInfo.getUserId();
+        Member updateMember=memberMapper.selectBySocialUid(socialUid);
+        //根据社交账号唯一标识判断该用户是否存在
+        if(updateMember!=null){
+            updateMember.setSocialUid(socialUid);
+            updateMember.setAccessToken(userInfo.getAccessToken());
+            updateMember.setExpiresIn(userInfo.getExpiresIn());
+            memberMapper.updateByPrimaryKeySelective(updateMember);
+            return updateMember;
+        }
+        //如果不存在，则需要注册
+        Member member = new Member();
+        if(!StringUtils.isEmpty(userInfo.getCity())){
+            member.setCity(userInfo.getCity());
+        }
+        if(!StringUtils.isEmpty(userInfo.getBirthday())){
+            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            Date birth = formatter.parse(userInfo.getBirthday());
+            member.setBirth(birth);
+        }
+        if(!StringUtils.isEmpty(userInfo.getGender())){
+            member.setGender(Byte.valueOf(userInfo.getGender()));
+        }
+        if(!StringUtils.isEmpty(userInfo.getEmail())){
+            member.setEmail(userInfo.getEmail());
+        }
+        if(userInfo.getExpiresIn() != 0){
+            member.setExpiresIn(userInfo.getExpiresIn());
+        }
+        if(!StringUtils.isEmpty(userInfo.getAccessToken())){
+            member.setAccessToken(userInfo.getAccessToken());
+        }
+        if(!StringUtils.isEmpty(userInfo.getUsername())){
+            member.setNickname(userInfo.getUsername());
+        }
+        if(!StringUtils.isEmpty(userInfo.getUserId())){
+            member.setSocialUid(userInfo.getUserId());
+        }
+        if(!StringUtils.isEmpty(userInfo.getPhone())){
+            member.setMobile(userInfo.getPhone());
+        }
+        member.setCreateTime(new Date());
+        memberMapper.insertSelective(member);
+        return member;
     }
 
 }

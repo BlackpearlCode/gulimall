@@ -22,11 +22,15 @@
     <result column="growth" jdbcType="INTEGER" property="growth" />
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="social_uid" jdbcType="VARCHAR" property="socialUid" />
+    <result column="access_token" jdbcType="VARCHAR" property="accessToken" />
+    <result column="expires_in" jdbcType="BIGINT" property="expiresIn" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, level_id, username, `password`, nickname, mobile, email, `header`, gender, birth, 
-    city, job, sign, source_type, integration, growth, `status`, create_time
+    city, job, sign, source_type, integration, growth, `status`, create_time, social_uid,
+    access_token, expires_in
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     <!--@mbg.generated-->
@@ -55,7 +59,7 @@
       #{integration,jdbcType=INTEGER}, #{growth,jdbcType=INTEGER}, #{status,jdbcType=TINYINT}, 
       #{createTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.example.member.entity.Member" useGeneratedKeys="true">
+  <insert   id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.example.member.entity.Member" useGeneratedKeys="true">
     <!--@mbg.generated-->
     insert into ums_member
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -110,6 +114,15 @@
       <if test="createTime != null">
         create_time,
       </if>
+      <if test="socialUid!= null">
+        social_uid,
+      </if>
+      <if test="accessToken!= null">
+        access_token,
+      </if>
+      <if test="expiresIn!= null">
+        expires_in,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="levelId != null">
@@ -162,6 +175,15 @@
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="socialUid != null and socialUid != '' != null">
+        #{socialUid,jdbcType=VARCHAR},
+      </if>
+      <if test="accessToken != null and accessToken != '' != null">
+        #{accessToken,jdbcType=VARCHAR},
+      </if>
+      <if test="expiresIn != null and expiresIn != '' != null">
+        #{expiresIn,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -220,6 +242,15 @@
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="socialUid != null and socialUid != '' != null">
+        social_uid = #{socialUid,jdbcType=VARCHAR},
+      </if>
+      <if test="accessToken != null and accessToken != '' != null">
+        access_token = #{accessToken,jdbcType=VARCHAR},
+      </if>
+      <if test="expiresIn != null and expiresIn != '' != null">
+        expires_in = #{expiresIn},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -257,4 +288,8 @@
   <select id="selectUsernameOrPhone" resultMap="BaseResultMap">
     select * from ums_member where username=#{vo.loginacct,jdbcType=VARCHAR} or mobile=#{vo.loginacct,jdbcType=VARCHAR}
     </select>
+
+  <select id="selectBySocialUid" resultMap="BaseResultMap">
+    select * from ums_member where  social_uid=#{socialUid}
+  </select>
 </mapper>

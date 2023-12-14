@@ -24,4 +24,6 @@ public interface MemberMapper {
     int seleatUsernameISExist(String username);
 
     Member selectUsernameOrPhone(@Param("vo") MemberLoginVo vo);
+
+    Member selectBySocialUid(String socialUid);
 }

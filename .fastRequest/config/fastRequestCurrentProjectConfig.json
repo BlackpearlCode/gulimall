@@ -9,6 +9,15 @@
 				}
 			],
 			"name":"gulimall-es"
+		},
+		{
+			"hostGroup":[
+				{
+					"env":"local",
+					"url":"http://localhost:8080"
+				}
+			],
+			"name":"gulimall-auth"
 		}
 	],
 	"envList":[
@@ -19,7 +28,8 @@
 	"postScript":"",
 	"preScript":"",
 	"projectList":[
-		"gulimall-es"
+		"gulimall-es",
+		"gulimall-auth"
 	],
 	"syncModel":{
 		"branch":"master",
