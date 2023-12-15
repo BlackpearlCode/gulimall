@@ -32,7 +32,6 @@ public class OAuth2Controller {
             log.error("获取用户信息失败");
             return "redirect:http://auth.onlineshopping.com/login.html";
         }
-
         Result result = memberFeignService.oauth2Login(oauth2UserInfo);
         if(result.getCode()==0){
             return "redirect:http://onlineshopping.com";

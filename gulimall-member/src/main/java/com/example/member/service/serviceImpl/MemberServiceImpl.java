@@ -120,46 +120,25 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public Member oauth2Login(Oauth2UserInfo userInfo) throws ParseException {
         //获取社交用户唯一标识
-        String socialUid = userInfo.getUserId();
+        String socialUid = userInfo.getOpenId();
         Member updateMember=memberMapper.selectBySocialUid(socialUid);
         //根据社交账号唯一标识判断该用户是否存在
         if(updateMember!=null){
-            updateMember.setSocialUid(socialUid);
-            updateMember.setAccessToken(userInfo.getAccessToken());
-            updateMember.setExpiresIn(userInfo.getExpiresIn());
-            memberMapper.updateByPrimaryKeySelective(updateMember);
             return updateMember;
         }
         //如果不存在，则需要注册
         Member member = new Member();
-        if(!StringUtils.isEmpty(userInfo.getCity())){
-            member.setCity(userInfo.getCity());
-        }
-        if(!StringUtils.isEmpty(userInfo.getBirthday())){
-            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            Date birth = formatter.parse(userInfo.getBirthday());
-            member.setBirth(birth);
-        }
-        if(!StringUtils.isEmpty(userInfo.getGender())){
-            member.setGender(Byte.valueOf(userInfo.getGender()));
-        }
-        if(!StringUtils.isEmpty(userInfo.getEmail())){
-            member.setEmail(userInfo.getEmail());
-        }
         if(userInfo.getExpiresIn() != 0){
             member.setExpiresIn(userInfo.getExpiresIn());
         }
         if(!StringUtils.isEmpty(userInfo.getAccessToken())){
             member.setAccessToken(userInfo.getAccessToken());
         }
-        if(!StringUtils.isEmpty(userInfo.getUsername())){
-            member.setNickname(userInfo.getUsername());
+        if(!StringUtils.isEmpty(userInfo.getNickname())){
+            member.setNickname(userInfo.getNickname());
         }
-        if(!StringUtils.isEmpty(userInfo.getUserId())){
-            member.setSocialUid(userInfo.getUserId());
-        }
-        if(!StringUtils.isEmpty(userInfo.getPhone())){
-            member.setMobile(userInfo.getPhone());
+        if(!StringUtils.isEmpty(userInfo.getOpenId())){
+            member.setSocialUid(userInfo.getOpenId());
         }
         member.setCreateTime(new Date());
         memberMapper.insertSelective(member);
