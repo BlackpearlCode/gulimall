@@ -28,6 +28,10 @@ public class OAuth2Controller {
     @RequestMapping("/oauth2.0/zhifubao/success")
     public String zhifubao(@RequestParam("auth_code") String auth_code) throws AlipayApiException, ParseException {
         Oauth2UserInfo oauth2UserInfo = thirdPartyFeginService.oauth2Login(auth_code);
+        if(oauth2UserInfo==null){
+            log.error("获取用户信息失败");
+            return "redirect:http://auth.onlineshopping.com/login.html";
+        }
 
         Result result = memberFeignService.oauth2Login(oauth2UserInfo);
         if(result.getCode()==0){
