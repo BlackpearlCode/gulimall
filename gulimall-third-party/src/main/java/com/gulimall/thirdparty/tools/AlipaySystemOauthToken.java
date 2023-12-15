@@ -62,7 +62,6 @@ public class AlipaySystemOauthToken {
         AlipaySystemOauthTokenRequest request = new AlipaySystemOauthTokenRequest();
         request.setCode(code);
         request.setGrantType("authorization_code");
-        request.setRefreshToken(code);
         AlipaySystemOauthTokenResponse response = alipayClient.execute(request);
         response.setExpiresIn("3600");
         //获取token成功
