@@ -75,6 +75,7 @@ public class MemberServiceImpl implements MemberService{
         member.setMobile(vo.getPhone());
         //设置用户名
         member.setUsername(vo.getUserName());
+        member.setNickname(vo.getUserName());
         //设置密码;密码加密存储
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encode = passwordEncoder.encode(vo.getPassword());

@@ -9,6 +9,7 @@ import com.example.member.vo.MemberRegistVo;
 import com.example.member.vo.Oauth2UserInfo;
 import com.gulimall.common.utils.BizCodeEnum;
 import com.gulimall.common.utils.Result;
+import com.gulimall.common.vo.TokenInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,7 +42,10 @@ public class MemberController {
     public Result login(@RequestBody MemberLoginVo vo){
         Member member=memberService.login(vo);
         if(member!=null){
-            return Result.ok();
+            TokenInfo tokenInfo = new TokenInfo();
+            tokenInfo.setNickname(member.getNickname());
+            tokenInfo.setUserId(String.valueOf(member.getId()));
+            return Result.ok().put("data",tokenInfo);
         }
         return Result.error(BizCodeEnum.LOGINACCT_PASSWORD_EXCEPTION);
     }

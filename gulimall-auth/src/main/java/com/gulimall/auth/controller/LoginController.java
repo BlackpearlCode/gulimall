@@ -9,6 +9,7 @@ import com.gulimall.auth.feign.ThirdPartyFeginService;
 import com.gulimall.auth.vo.UserLoginVo;
 import com.gulimall.auth.vo.UserRegistVo;
 import com.gulimall.common.utils.Result;
+import com.gulimall.common.vo.TokenInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.thymeleaf.util.StringUtils;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
@@ -107,18 +109,33 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(UserLoginVo vo,RedirectAttributes redirectAttributes){
+    public String login(UserLoginVo vo, RedirectAttributes redirectAttributes, HttpSession session){
         //远程登录
         Result r = memberFeignService.login(vo);
+        Gson gson=new Gson();
         if(r.getCode()==0){
+            Object object = r.get("data");
+            TokenInfo tokenInfo = gson.fromJson(object.toString(), TokenInfo.class);
+            session.setAttribute("loginUser",tokenInfo);
             return "redirect:http://onlineshopping.com";
+
+
         }
         HashMap<String, String> errors = new HashMap<>();
-        Gson gson=new Gson();
+
         String data = gson.toJson(r.get("msg"));
         errors.put("msg", data);
         redirectAttributes.addFlashAttribute("errors",errors);
         return "redirect:http://auth.onlineshopping.com/login.html";
+    }
+
+    @GetMapping("/login.html")
+    public String loginPage(HttpSession session){
+        Object attribute = session.getAttribute("loginUser");
+        if(attribute!=null){
+            return "redirect:http://onlineshopping.com";
+        }
+        return "login";
     }
 
 
