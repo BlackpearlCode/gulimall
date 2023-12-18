@@ -1,0 +1,13 @@
+spring:
+    cloud:
+        nacos:
+            config:
+                server-addr: 47.99.142.201:8848
+                ext-config[0].data-id: config.yml
+                ext-config[0].group: DEFAULT_GROUP
+                #动态刷新配置
+                ext-config[0].refresh: true
+                namespace: 0856a058-e5ea-47b0-b87f-c68dd9b6e32f
+            discovery:
+                server-addr: 47.99.142.201:8848
+

@@ -32,6 +32,7 @@
         <module>gulimall-es</module>
         <module>gulimall-auth</module>
         <module>gulimall-redis</module>
+        <module>gulimall-cart</module>
     </modules>
 
 </project>
