@@ -17,4 +17,15 @@ public class CartRedisController {
     public boolean saveHash(@RequestParam("key") String key, @RequestParam("item") String item, @RequestParam("value") Object value){
         return redisUtil.hset(key,item,value);
     }
+
+
+    @RequestMapping("/getHash")
+    public String getHash(@RequestParam("key") String key, @RequestParam("item") String item){
+        boolean bool = redisUtil.hHasKey(key, item);
+        if(!bool){
+            return null;
+        }
+        Object object = redisUtil.hget(key, item);
+        return object.toString();
+    }
 }

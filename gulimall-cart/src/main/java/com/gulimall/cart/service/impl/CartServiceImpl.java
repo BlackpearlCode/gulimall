@@ -1,6 +1,5 @@
 package com.gulimall.cart.service.impl;
 
-import com.alibaba.fastjson.TypeReference;
 import com.google.gson.Gson;
 import com.gulimall.cart.feign.ProductFeignService;
 import com.gulimall.cart.feign.RedisFeignService;
@@ -12,6 +11,7 @@ import com.gulimall.cart.vo.UserInfoTo;
 import com.gulimall.common.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -42,11 +42,24 @@ public class CartServiceImpl implements CartService {
             //未登录状态下，添加购物车
             cartKey=CART_PREFIX+userInfoTo.getUserKey();
         }
+        //查询购物车中是否有该商品，有则数量累加，没有则添加新商品
+        String data = redisFeignService.getHash(cartKey, skuId.toString());
+        if(!StringUtils.isEmpty(data)){
+            //购物车中有该商品，数量累加
+            Gson gson=new Gson();
+            CartItem cartItem=gson.fromJson(data, CartItem.class);
+            cartItem.setCount(cartItem.getCount()+num);
+            redisFeignService.saveHash(cartKey, skuId.toString(),gson.toJson(cartItem));
+            return cartItem;
+        }
+
+        //添加新商品到购物车
         CartItem cartItem = new CartItem();
         //异步：远程查询sku信息
+        Gson gson = new Gson();
         CompletableFuture<Void> getSkuInfoTask = CompletableFuture.runAsync(() -> {
             Result info = productFeignService.info(skuId);
-            Gson gson = new Gson();
+
             Object sku = info.get("sku");
             PmsSkuInfo skuInfoVo = gson.fromJson(gson.toJson(sku), PmsSkuInfo.class);
 
@@ -63,7 +76,7 @@ public class CartServiceImpl implements CartService {
             cartItem.setSkuAttr(skuSaleAtttrValues);
         }, executor);
         CompletableFuture.allOf(getSkuInfoTask,getSkuSaleAttrValues).get();
-        redisFeignService.saveHash(cartKey, String.valueOf(skuId),cartItem);
+        redisFeignService.saveHash(cartKey, String.valueOf(skuId),gson.toJson(cartItem));
 
         return cartItem;
     }
