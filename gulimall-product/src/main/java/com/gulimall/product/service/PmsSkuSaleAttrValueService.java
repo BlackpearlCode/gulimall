@@ -22,4 +22,7 @@ public interface PmsSkuSaleAttrValueService{
 
 
     List<SkuItemSaleAttrVo> getSaleAttrsBySpuId(Long spuId);
+
+
+    List<String> getSkuSaleAttrValuesAsStringList(Long skuId);
 }

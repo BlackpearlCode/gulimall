@@ -6,11 +6,9 @@ import com.gulimall.common.utils.Result;
 import com.gulimall.product.entity.PmsSkuInfo;
 import com.gulimall.product.service.impl.PmsSkuInfoServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -19,6 +17,16 @@ public class SKuInfoContorller {
 
     @Autowired
     private PmsSkuInfoServiceImpl skuInfoService;
+
+    /**
+     * 根据skuId查询销售属性
+     * @param skuId
+     * @return
+     */
+    @GetMapping("/stringlist/{skuId}")
+    public List<String> getSkuSaleAtttrValues(@PathVariable ("skuId") Long skuId){
+        return skuInfoService.getSkuSaleAtttrValues(skuId);
+    }
 
 
     /**

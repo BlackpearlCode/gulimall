@@ -25,4 +25,6 @@ public interface PmsSkuSaleAttrValueMapper {
     void batchSave(@Param("saleAttrList") List<PmsSkuSaleAttrValue> saleAttrList);
 
     List<SkuItemSaleAttrVo> getSaleAttrsBySpuId(@Param("spuId") Long spuId);
+
+    List<String> getSkuSaleAttrValuesAsStringList(Long skuId);
 }

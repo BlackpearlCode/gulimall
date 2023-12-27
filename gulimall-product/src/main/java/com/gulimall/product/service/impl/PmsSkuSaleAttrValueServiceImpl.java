@@ -59,4 +59,9 @@ public class PmsSkuSaleAttrValueServiceImpl implements PmsSkuSaleAttrValueServic
         return saleAttrVos;
     }
 
+    @Override
+    public List<String> getSkuSaleAttrValuesAsStringList(Long skuId) {
+       return pmsSkuSaleAttrValueMapper.getSkuSaleAttrValuesAsStringList(skuId);
+    }
+
 }

@@ -10,3 +10,4 @@ spring:
                 namespace: d17699a3-303b-4e59-a951-1acca6dec703
             discovery:
                 server-addr: 47.99.142.201:8848
+

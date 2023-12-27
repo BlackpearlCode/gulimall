@@ -221,5 +221,10 @@ public class PmsSkuInfoServiceImpl implements PmsSkuInfoService {
         return item;
     }
 
+    @Override
+    public List<String> getSkuSaleAtttrValues(Long skuId) {
+        return skuSaleAttrValueService.getSkuSaleAttrValuesAsStringList(skuId);
+    }
+
 
 }

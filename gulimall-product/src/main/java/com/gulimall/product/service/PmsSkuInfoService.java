@@ -33,4 +33,6 @@ public interface PmsSkuInfoService{
 
 
     SkuItemVo item(Long skuId) throws ExecutionException, InterruptedException;
+
+    List<String> getSkuSaleAtttrValues(Long skuId);
 }
