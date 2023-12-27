@@ -49,6 +49,7 @@ public class CartServiceImpl implements CartService {
             Gson gson=new Gson();
             CartItem cartItem=gson.fromJson(data, CartItem.class);
             cartItem.setCount(cartItem.getCount()+num);
+            cartItem.setTotalPrice(cartItem.getTotalPrice());
             redisFeignService.saveHash(cartKey, skuId.toString(),gson.toJson(cartItem));
             return cartItem;
         }
@@ -69,6 +70,7 @@ public class CartServiceImpl implements CartService {
             cartItem.setSkuId(skuId);
             cartItem.setTitle(skuInfoVo.getSkuTitle());
             cartItem.setPrice(skuInfoVo.getPrice());
+            cartItem.setTotalPrice(cartItem.getTotalPrice());
         },executor);
         //异步：查询sku的组合信息
         CompletableFuture<Void> getSkuSaleAttrValues = CompletableFuture.runAsync(() -> {
