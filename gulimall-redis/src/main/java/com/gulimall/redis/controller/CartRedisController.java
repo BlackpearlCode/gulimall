@@ -35,4 +35,14 @@ public class CartRedisController {
     public Map<String, String> getAllHash(@RequestParam("key") String key){
        return redisUtil.hmget(key);
     }
+
+    @RequestMapping("/delHash")
+    public void delHash(@RequestParam("key") String key){
+        redisUtil.del(key);
+    }
+
+    @RequestMapping("/delHashKey")
+    public void delHashKey(@RequestParam("key") String key,@RequestParam("item") String item){
+        redisUtil.hdel(key,item);
+    }
 }

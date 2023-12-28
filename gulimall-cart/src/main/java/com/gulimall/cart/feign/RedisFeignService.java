@@ -17,4 +17,10 @@ public interface RedisFeignService {
 
     @RequestMapping("/cart/redis/getAllHash")
     public Map<String, String> getAllHash(@RequestParam("key") String key);
+
+    @RequestMapping("/cart/redis/delHash")
+    public void delHash(@RequestParam("key") String key);
+
+    @RequestMapping("/cart/redis/delHashKey")
+    public void delHashKey(@RequestParam("key") String key,@RequestParam("item") String item);
 }

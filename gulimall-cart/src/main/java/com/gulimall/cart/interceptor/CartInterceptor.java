@@ -39,23 +39,21 @@ public class CartInterceptor implements HandlerInterceptor {
             //如果userid为空，将userid设置为社交用户唯一标识id
             String userId=tokenInfo.getUserId()==null?tokenInfo.getSocialUid():tokenInfo.getUserId();
             userInfoTo.setUserId(userId);
-        }else{
-            //用户没登录
-            Cookie[] cookies = request.getCookies();
-            if(cookies!=null && cookies.length>0){
-                for (Cookie cookie : cookies) {
-                    if(cookie.getName().equals("user-key")){
-                        userInfoTo.setUserKey(cookie.getValue());
-                        userInfoTo.setTempUser(true);
-                    }
+        }
+        //用户没登录
+        Cookie[] cookies = request.getCookies();
+        if(cookies!=null && cookies.length>0){
+            for (Cookie cookie : cookies) {
+                if(cookie.getName().equals("user-key")){
+                    userInfoTo.setUserKey(cookie.getValue());
+                    userInfoTo.setTempUser(true);
                 }
             }
-            //如果没有临时用户，一定分配一个临时用户
-            if(StringUtils.isEmpty(userInfoTo.getUserKey())){
-                String uuid= UUID.randomUUID().toString();
-                userInfoTo.setUserKey(uuid);
-            }
-
+        }
+        //如果没有临时用户，一定分配一个临时用户
+        if(StringUtils.isEmpty(userInfoTo.getUserKey())){
+            String uuid= UUID.randomUUID().toString();
+            userInfoTo.setUserKey(uuid);
         }
         //目标方法执行之前
         threadLocal.set(userInfoTo);

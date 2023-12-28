@@ -5,6 +5,7 @@ import com.gulimall.cart.feign.ProductFeignService;
 import com.gulimall.cart.feign.RedisFeignService;
 import com.gulimall.cart.interceptor.CartInterceptor;
 import com.gulimall.cart.service.CartService;
+import com.gulimall.cart.vo.Cart;
 import com.gulimall.cart.vo.CartItem;
 import com.gulimall.cart.vo.PmsSkuInfo;
 import com.gulimall.cart.vo.UserInfoTo;
@@ -13,9 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -102,15 +101,87 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<CartItem> getAllCarts() {
-        String key = getString();
-        Map<String, String> cartItemMap=redisFeignService.getAllHash(key);
-        Collection<String> values = cartItemMap.values();
-        List<CartItem> cartitems = values.stream().map(i -> {
+    public Cart getAllCarts() {
+        //获取当前用户信息
+        UserInfoTo userInfoTo = CartInterceptor.threadLocal.get();
+
+        //判断用户是否登录
+        if(userInfoTo.getUserId()==null){
+            //用户未登录，获取临时购物车的内容
+            Map<String, String> cartItemMap=redisFeignService.getAllHash(CART_PREFIX+userInfoTo.getUserKey());
+            Collection<String> values = cartItemMap.values();
+            List<CartItem> cartItems = values.stream().map(i -> {
+                Gson gson = new Gson();
+                CartItem cartItem = gson.fromJson( i, CartItem.class);
+                return cartItem;
+            }).collect(Collectors.toList());
+            Cart cart = new Cart();
+            cart.setItems(cartItems);
+            return cart;
+        }
+        //用户已登录，获取用户购物车的商品
+        Map<String, String> cartUserMap=redisFeignService.getAllHash(CART_PREFIX+userInfoTo.getUserId());
+        //获取临时购物车的商品
+        Map<String, String> carTemporaryMap=redisFeignService.getAllHash(CART_PREFIX+userInfoTo.getUserKey());
+        Collection<String> temporaryValues = carTemporaryMap.values();
+        //将临时购物车的商品添加到用户购物车中，如果用户购物车存在该商品则修改数量和总价格；如果用户购物车不存在则添加
+        for (String temporaryValue : temporaryValues) {
             Gson gson = new Gson();
-            CartItem cartItem = gson.fromJson( i, CartItem.class);
+            CartItem cartItem = gson.fromJson(temporaryValue, CartItem.class);
+            if(cartUserMap.containsKey(String.valueOf(cartItem.getSkuId()))){
+                //用户购物车中有该商品，数量累加
+                CartItem cartItemUser = gson.fromJson(cartUserMap.get(String.valueOf(cartItem.getSkuId())), CartItem.class);
+                cartItemUser.setCount(cartItemUser.getCount()+cartItem.getCount());
+                cartItem.setTotalPrice(cartItem.getTotalPrice());
+            }
+            //如果用户购物车不存在该商品，则添加
+            cartUserMap.put(String.valueOf(cartItem.getSkuId()),gson.toJson(cartItem));
+        }
+        for (Map.Entry<String, String> entry : cartUserMap.entrySet()) {
+            redisFeignService.saveHash(CART_PREFIX+userInfoTo.getUserId(),entry.getKey(),entry.getValue());
+        }
+        //购物车合并成功，删除临时购物车
+        clearCart(CART_PREFIX+userInfoTo.getUserKey());
+        //将合并后的购物车商品列表返回前端
+        Collection<String> values = cartUserMap.values();
+        List<CartItem> userCarts = values.stream().map(i -> {
+            Gson gson = new Gson();
+            CartItem cartItem = gson.fromJson(i, CartItem.class);
             return cartItem;
         }).collect(Collectors.toList());
-        return cartitems;
+        Cart cart = new Cart();
+        cart.setItems(userCarts);
+        return cart;
+    }
+
+    @Override
+    public void clearCart(String cartKey) {
+        redisFeignService.delHash(cartKey);
+    }
+
+    @Override
+    public void checkItem(Long skuId, Integer checked) {
+        CartItem cartItem = getCartItem(skuId);
+        if(cartItem!=null){
+            cartItem.setCheck(checked==1?true:false);
+            String cartKey = getString();
+            redisFeignService.saveHash(cartKey, String.valueOf(skuId),new Gson().toJson(cartItem));
+        }
+    }
+
+    @Override
+    public void countItem(Long skuId, Integer num) {
+        CartItem cartItem = getCartItem(skuId);
+        if(cartItem!=null){
+            cartItem.setCount(num);
+            String cartKey = getString();
+            redisFeignService.saveHash(cartKey, String.valueOf(skuId),new Gson().toJson(cartItem));
+        }
+    }
+
+    @Override
+    public void deleteItem(Integer skuId) {
+        String cartKey = getString();
+        redisFeignService.delHashKey(cartKey,skuId.toString());
     }
 }

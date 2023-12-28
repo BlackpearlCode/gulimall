@@ -1,5 +1,6 @@
 package com.gulimall.cart.service;
 
+import com.gulimall.cart.vo.Cart;
 import com.gulimall.cart.vo.CartItem;
 
 import java.util.List;
@@ -13,5 +14,15 @@ public interface CartService {
     CartItem getCartItem(Long skuId);
 
     //获取当前用户购物车所有购物项
-    List<CartItem> getAllCarts();
+    Cart getAllCarts();
+
+    //情况购物车
+    void clearCart(String cartKey);
+
+    //勾选购物项
+    void checkItem(Long skuId, Integer checked);
+    //修改购物项数量
+    void countItem(Long skuId, Integer num);
+    //删除购物项
+    void deleteItem(Integer skuId);
 }

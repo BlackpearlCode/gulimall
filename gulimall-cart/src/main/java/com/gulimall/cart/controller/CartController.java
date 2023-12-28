@@ -1,9 +1,8 @@
 package com.gulimall.cart.controller;
 
-import com.gulimall.cart.interceptor.CartInterceptor;
 import com.gulimall.cart.service.CartService;
+import com.gulimall.cart.vo.Cart;
 import com.gulimall.cart.vo.CartItem;
-import com.gulimall.cart.vo.UserInfoTo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Controller
@@ -21,16 +19,15 @@ public class CartController {
     private CartService cartService;
 
     /**
-     *
+     *获取购物车列表
      * @return
      */
     @GetMapping("/cart.html")
     public String cartListPage(Model model){
-        //获取用户登录信息
-        UserInfoTo userInfoTo = CartInterceptor.threadLocal.get();
+
         //获取购物车列表
-        List<CartItem> cartItems=cartService.getAllCarts();
-        model.addAttribute("cartList",cartItems);
+        Cart cart =cartService.getAllCarts();
+        model.addAttribute("cart",cart);
         return "cartList";
     }
 
@@ -51,5 +48,39 @@ public class CartController {
         CartItem cartItem=cartService.getCartItem(skuId);
         model.addAttribute("cartItem",cartItem);
         return "success";
+    }
+
+    /**
+     * 修改购物项
+     * @param skuId
+     * @param checked
+     * @return
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    @GetMapping("/checkItem")
+    public String checkItem(@RequestParam(value = "skuId") Long skuId, @RequestParam(value = "checked") Integer checked) throws ExecutionException, InterruptedException {
+        cartService.checkItem(skuId,checked);
+        return "redirect:http://cart.onlineshopping.com/cart.html";
+    }
+
+    /**
+     * 修改购物项数量
+     * @param skuId
+     * @param num
+     * @return
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    @GetMapping("/countItem")
+    public String countItem(@RequestParam(value = "skuId") Long skuId, @RequestParam(value = "num") Integer num) throws ExecutionException, InterruptedException {
+        cartService.countItem(skuId,num);
+        return "redirect:http://cart.onlineshopping.com/cart.html";
+    }
+
+    @GetMapping("/deleteItem")
+    public String deleteItem(@RequestParam("skuId") Integer skuId){
+        cartService.deleteItem(skuId);
+        return "redirect:http://cart.onlineshopping.com/cart.html";
     }
 }
