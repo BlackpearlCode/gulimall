@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/cart/redis")
 public class CartRedisController {
@@ -27,5 +29,10 @@ public class CartRedisController {
         }
         Object object = redisUtil.hget(key, item);
         return object.toString();
+    }
+
+    @RequestMapping("/getAllHash")
+    public Map<String, String> getAllHash(@RequestParam("key") String key){
+       return redisUtil.hmget(key);
     }
 }

@@ -1,9 +1,10 @@
 package com.gulimall.cart.feign;
 
-import com.gulimall.cart.vo.CartItem;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Map;
 
 @FeignClient("gulimall-redis")
 public interface RedisFeignService {
@@ -13,4 +14,7 @@ public interface RedisFeignService {
 
     @RequestMapping("/cart/redis/getHash")
     public String getHash(@RequestParam("key") String key, @RequestParam("item") String item);
+
+    @RequestMapping("/cart/redis/getAllHash")
+    public Map<String, String> getAllHash(@RequestParam("key") String key);
 }
