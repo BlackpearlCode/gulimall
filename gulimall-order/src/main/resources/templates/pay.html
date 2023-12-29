@@ -12,7 +12,7 @@
         <img src="/static/order/pay/img/logo1.jpg" alt=""><span class="bank">收银台</span>
         <ul>
           <li><span>[[${session.loginUser.nickname}]]</span><span>退出</span></li>
-          <li><a href="http://order.gulimall.com/list.html">我的订单</a></li>
+          <li><a href="http://order.onlineshopping.com/list.html">我的订单</a></li>
           <li>支付帮助</li>
         </ul>
       </div>
@@ -98,17 +98,17 @@
         <ul>
           <li>
             <img src="/static/order/pay/img/weixin.png" alt="">
-            <a th:href="'http://order.gulimall.com/weixinPayOrder?orderSn='+${submitOrderResp.order.orderSn}">微信支付</a>
+            <a th:href="'http://order.onlineshopping.com/weixinPayOrder?orderSn='+${submitOrderResp.order.orderSn}">微信支付</a>
           </li>
 		  <li>
             <img src="/static/order/pay/img/zhifubao.png" style="weight:auto;height:30px;" alt="">
-            <a th:href="'http://order.gulimall.com/aliPayOrder?orderSn='+${submitOrderResp.order.orderSn}">支付宝</a>
+            <a th:href="'http://order.onlineshopping.com/aliPayOrder?orderSn='+${submitOrderResp.order.orderSn}">支付宝</a>
           </li>
         </ul>
       </div>
       <div class="Jd_foots">
         <p>
-          <span>Copyright @2004-2017 谷粒学院gulimall.com 版权所有</span>
+          <span>Copyright @2004-2017 谷粒学院onlineshopping.com 版权所有</span>
           <span>
             <img src="/static/order/pay/img/foots.png" alt="">
           </span>
