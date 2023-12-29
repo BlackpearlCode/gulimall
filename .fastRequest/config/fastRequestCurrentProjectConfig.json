@@ -18,6 +18,15 @@
 				}
 			],
 			"name":"gulimall-auth"
+		},
+		{
+			"hostGroup":[
+				{
+					"env":"local",
+					"url":"http://localhost:8080"
+				}
+			],
+			"name":"gulimall-order"
 		}
 	],
 	"envList":[
@@ -25,11 +34,14 @@
 	],
 	"headerList":[],
 	"maxDescriptionLength":-1,
+	"pmApiKey":"",
+	"pmCollectionId":"",
 	"postScript":"",
 	"preScript":"",
 	"projectList":[
 		"gulimall-es",
-		"gulimall-auth"
+		"gulimall-auth",
+		"gulimall-order"
 	],
 	"syncModel":{
 		"branch":"master",
@@ -43,7 +55,9 @@
 		"token":"",
 		"type":"github"
 	},
+	"syncPmAfterSave":false,
 	"urlEncodedKeyValueList":[],
 	"urlParamsKeyValueList":[],
-	"urlSuffix":""
+	"urlSuffix":"",
+	"workspaceId":""
 }
