@@ -39,8 +39,8 @@ public class MyRabbitConfig {
      *		1.默认是自动确认的 只要消息接收到 服务端就会移除这个消息
      *
      *		如何签收:
-     *			签收: channel.basicAck(deliveryTag, false);
-     *			拒签: channel.basicNack(deliveryTag, false,true);
+     *			签收: channel.basicAck(deliveryTag, false); 业务成功
+     *			拒签: channel.basicNack(deliveryTag, false,true); 业务失败
      *	配置文件中一定要加上这个配置
      *		listener:
      *       simple:
