@@ -33,4 +33,7 @@ public interface MemberService{
     Member login(MemberLoginVo vo);
 
     Member oauth2Login(Oauth2UserInfo userInfo) throws ParseException;
+
+    //通过用户id或者社交账号唯一id查询用户信息
+    Member selectByMemberId(String memberId);
 }

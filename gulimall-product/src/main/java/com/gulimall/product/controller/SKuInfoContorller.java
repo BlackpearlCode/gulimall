@@ -8,6 +8,7 @@ import com.gulimall.product.service.impl.PmsSkuInfoServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -43,5 +44,11 @@ public class SKuInfoContorller {
     public Result info(@PathVariable("skuId") Long skuId){
         PmsSkuInfo skuInfo = skuInfoService.selectByPrimaryKey(skuId);
         return Result.r(BizCodeEnum.OK.getCode(), BizCodeEnum.OK.getMsg()).put("sku",skuInfo);
+    }
+
+    //获取商品价格
+    @RequestMapping("/{skuId}/price")
+    public BigDecimal getPrice(@PathVariable("skuId") Long skuId){
+        return skuInfoService.selectByPrimaryKey(skuId).getPrice();
     }
 }

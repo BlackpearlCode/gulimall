@@ -16,11 +16,7 @@ import com.example.member.mapper.MemberMapper;
 import com.example.member.service.MemberService;
 import org.springframework.util.StringUtils;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Service
@@ -145,5 +141,13 @@ public class MemberServiceImpl implements MemberService{
         memberMapper.insertSelective(member);
         return member;
     }
+
+    @Override
+    public Member selectByMemberId(String memberId) {
+
+        return memberMapper.selectByMemberId(memberId);
+    }
+
+
 
 }

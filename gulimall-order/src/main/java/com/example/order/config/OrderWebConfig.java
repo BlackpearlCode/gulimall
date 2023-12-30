@@ -14,7 +14,6 @@ public class OrderWebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(org.springframework.web.servlet.config.annotation.InterceptorRegistry registry) {
         registry.addInterceptor(interceptor)
-               .addPathPatterns("/**")
-               .excludePathPatterns("/toTrade", "/toPay", "/toSubmitOrder", "/toPaySuccess");
+               .addPathPatterns("/**");
     }
 }

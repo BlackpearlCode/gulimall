@@ -11,10 +11,7 @@ import com.gulimall.common.utils.BizCodeEnum;
 import com.gulimall.common.utils.Result;
 import com.gulimall.common.vo.TokenInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 
@@ -61,5 +58,15 @@ public class MemberController {
             return Result.ok();
         }
         return Result.error(BizCodeEnum.OAUTH2_LOGIN_EXCEPTION);
+    }
+
+    /**
+     * 通过社交账号查询会员id
+     * @param memberId
+     * @return
+     */
+    @RequestMapping("/findMemberId")
+    public Member findMemberId(@RequestParam("memberId") String memberId){
+        return memberService.selectByMemberId(memberId);
     }
 }

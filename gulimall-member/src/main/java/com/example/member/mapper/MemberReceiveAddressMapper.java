@@ -3,6 +3,8 @@ package com.example.member.mapper;
 import com.example.member.entity.MemberReceiveAddress;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface MemberReceiveAddressMapper {
     int deleteByPrimaryKey(Long id);
@@ -16,4 +18,6 @@ public interface MemberReceiveAddressMapper {
     int updateByPrimaryKeySelective(MemberReceiveAddress record);
 
     int updateByPrimaryKey(MemberReceiveAddress record);
+
+    List<MemberReceiveAddress> selectByMemberId(Long memberId);
 }

@@ -5,6 +5,9 @@ import javax.annotation.Resource;
 import com.example.member.mapper.MemberReceiveAddressMapper;
 import com.example.member.entity.MemberReceiveAddress;
 import com.example.member.service.MemberReceiveAddressService;
+
+import java.util.List;
+
 @Service
 public class MemberReceiveAddressServiceImpl implements MemberReceiveAddressService{
 
@@ -39,6 +42,14 @@ public class MemberReceiveAddressServiceImpl implements MemberReceiveAddressServ
     @Override
     public int updateByPrimaryKey(MemberReceiveAddress record) {
         return memberReceiveAddressMapper.updateByPrimaryKey(record);
+    }
+
+    @Override
+    public List<MemberReceiveAddress> getAddress(Long memberId) {
+        if(memberId!=null){
+            return memberReceiveAddressMapper.selectByMemberId(memberId);
+        }
+        return null;
     }
 
 }

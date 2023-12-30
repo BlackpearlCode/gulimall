@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -183,5 +184,30 @@ public class CartServiceImpl implements CartService {
     public void deleteItem(Integer skuId) {
         String cartKey = getString();
         redisFeignService.delHashKey(cartKey,skuId.toString());
+    }
+
+    @Override
+    public List<CartItem> getCurrentUserCartItems() {
+        UserInfoTo userInfoTo = CartInterceptor.threadLocal.get();
+        if(userInfoTo.getUserId()==null){
+            return null;
+        }
+        String cartKey=CART_PREFIX+userInfoTo.getUserId();
+        Map<String, String> cartItemMap = redisFeignService.getAllHash(cartKey);
+        Collection<String> values = cartItemMap.values();
+        //获取所有被选中的购物项
+        List<CartItem> cartItems = values.stream().map(i -> {
+            Gson gson = new Gson();
+            CartItem cartItem = gson.fromJson( i, CartItem.class);
+            return cartItem;
+        }).filter(obj->obj.getCheck())
+                //获取最新的价格
+                .map(item->{
+                    BigDecimal price = productFeignService.getPrice(item.getSkuId());
+                    item.setPrice(price);
+                    return item;
+                })
+                .collect(Collectors.toList());
+        return cartItems;
     }
 }

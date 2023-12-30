@@ -1,6 +1,9 @@
 package com.example.member.service;
 
 import com.example.member.entity.MemberReceiveAddress;
+
+import java.util.List;
+
 public interface MemberReceiveAddressService{
 
 
@@ -16,4 +19,6 @@ public interface MemberReceiveAddressService{
 
     int updateByPrimaryKey(MemberReceiveAddress record);
 
+    // 获取用户的所有收货地址
+    List<MemberReceiveAddress> getAddress(Long memberId);
 }

@@ -25,5 +25,8 @@ public interface MemberMapper {
 
     Member selectUsernameOrPhone(@Param("vo") MemberLoginVo vo);
 
-    Member selectBySocialUid(String socialUid);
+
+    Member selectByMemberId(@Param("memberId") String memberId);
+
+    Member selectBySocialUid(@Param("socialUid") String socialUid);
 }

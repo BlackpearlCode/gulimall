@@ -289,7 +289,11 @@
     select * from ums_member where username=#{vo.loginacct,jdbcType=VARCHAR} or mobile=#{vo.loginacct,jdbcType=VARCHAR}
     </select>
 
+  <select id="selectByMemberId" resultMap="BaseResultMap">
+    select * from ums_member where id=#{memberId} or social_uid=#{memberId}
+  </select>
+
   <select id="selectBySocialUid" resultMap="BaseResultMap">
-    select * from ums_member where  social_uid=#{socialUid}
+    select * from ums_member where social_uid=#{socialUid}
   </select>
 </mapper>

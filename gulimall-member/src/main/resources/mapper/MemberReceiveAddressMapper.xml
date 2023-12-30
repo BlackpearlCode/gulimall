@@ -164,4 +164,8 @@
       default_status = #{defaultStatus,jdbcType=BOOLEAN}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <select id="selectByMemberId" resultMap="BaseResultMap">
+    select * from ums_member_receive_address where member_id = #{memberId}
+    </select>
 </mapper>

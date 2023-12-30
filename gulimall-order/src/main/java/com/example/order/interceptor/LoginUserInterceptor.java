@@ -25,7 +25,7 @@ public class LoginUserInterceptor implements HandlerInterceptor {
             return false;
         }
         Gson gson = new Gson();
-        TokenInfo tokenInfo = gson.fromJson(obj.toString(), TokenInfo.class);
+        TokenInfo tokenInfo = gson.fromJson(gson.toJson(obj),TokenInfo.class);
         loginUser.set(tokenInfo);
         return true;
     }

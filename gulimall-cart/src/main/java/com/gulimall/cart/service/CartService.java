@@ -25,4 +25,6 @@ public interface CartService {
     void countItem(Long skuId, Integer num);
     //删除购物项
     void deleteItem(Integer skuId);
+    //获取当前用户购物车所有购物项
+    List<CartItem> getCurrentUserCartItems();
 }
