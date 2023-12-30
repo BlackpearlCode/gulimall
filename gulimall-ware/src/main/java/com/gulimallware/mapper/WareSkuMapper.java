@@ -27,4 +27,6 @@ public interface WareSkuMapper {
 
 
     int selectBySkuId(Long skuId);
+
+    WareSku selectInfoBySkuId(Long skuId);
 }

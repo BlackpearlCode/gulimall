@@ -124,5 +124,9 @@
   <select id="selectBySkuId" resultType="int">
     <!--总库存数减去锁定库存数>0-->
     select sum(stock-stock_locked) from wms_ware_sku where sku_id=#{skuId,jdbcType=BIGINT}
-    </select>
+  </select>
+
+  <select id="selectInfoBySkuId" resultMap="BaseResultMap">
+    select * from wms_ware_sku where sku_id=#{skuId,jdbcType=BIGINT}
+  </select>
 </mapper>

@@ -19,10 +19,12 @@ public class FeignConfig {
             public void apply(RequestTemplate template) {
                 //1.获取请求头信息
                 ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-                HttpServletRequest request = attributes.getRequest();
-                //同步请求头数据
-                if(request!=null){
-                    template.header("Cookie", request.getHeader("Cookie"));
+                if(attributes!=null){
+                    HttpServletRequest request = attributes.getRequest();
+                    //同步请求头数据
+                    if(request!=null){
+                        template.header("Cookie", request.getHeader("Cookie"));
+                    }
                 }
             }
         };

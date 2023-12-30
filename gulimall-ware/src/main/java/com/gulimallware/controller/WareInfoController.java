@@ -5,9 +5,11 @@ import com.gulimall.common.utils.PageEntity;
 import com.gulimall.common.utils.Result;
 import com.gulimallware.entity.WareInfo;
 import com.gulimallware.service.serviceImpl.WareInfoServiceImpl;
+import com.gulimallware.vo.FareVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -55,5 +57,16 @@ public class WareInfoController {
     public Result save(@RequestBody WareInfo ware){
         wareInfoService.insertSelective(ware);
         return Result.r(BizCodeEnum.OK.getCode(), BizCodeEnum.OK.getMsg());
+    }
+
+    /**
+     * 获取运费信息
+     * @param id
+     * @return
+     */
+    @GetMapping("/fare")
+    public Result fare(@RequestParam("addrId") Long id){
+        FareVo fare=wareInfoService.getFare(id);
+        return Result.ok().setData(fare);
     }
 }

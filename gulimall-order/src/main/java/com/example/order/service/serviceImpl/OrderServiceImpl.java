@@ -1,16 +1,18 @@
 package com.example.order.service.serviceImpl;
 
+import com.alibaba.fastjson.TypeReference;
 import com.example.order.entity.Order;
 import com.example.order.entity.OrderReturnReason;
 import com.example.order.feign.CartFeignService;
 import com.example.order.feign.MemberFeignService;
+import com.example.order.feign.WmsFeignService;
 import com.example.order.interceptor.LoginUserInterceptor;
 import com.example.order.mapper.OrderMapper;
 import com.example.order.service.OrderService;
-import com.example.order.vo.MemberAddressVo;
-import com.example.order.vo.MemberVo;
-import com.example.order.vo.OrderConfirmVo;
-import com.example.order.vo.OrderItemVo;
+import com.example.order.vo.*;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.gulimall.common.utils.Result;
 import com.gulimall.common.vo.TokenInfo;
 import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.Message;
@@ -18,16 +20,19 @@ import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @RabbitListener(queues = {"hello-java-queue"})
 @Service
@@ -40,6 +45,9 @@ public class OrderServiceImpl implements OrderService{
 
     @Autowired
     private CartFeignService cartFeignService;
+
+    @Autowired
+    private WmsFeignService wmsFeignService;
 
     @Autowired
     private ThreadPoolExecutor executor;
@@ -100,6 +108,12 @@ public class OrderServiceImpl implements OrderService{
             //查询用户积分
             Integer integration = memberInfo.getIntegration();
             confirmVo.setIntegration(integration);
+            //设置商品总数
+            confirmVo.setCount(confirmVo.getCount());
+            //设置总价
+            confirmVo.setTotal(confirmVo.getTotal());
+            //设置应付总价
+            confirmVo.setPayPrice(confirmVo.getTotal());
 
            return memberInfo;
         }, executor);
@@ -113,16 +127,31 @@ public class OrderServiceImpl implements OrderService{
         });
 
 
-        CompletableFuture<Void> orderFuture = CompletableFuture.runAsync(() -> {
+        CompletableFuture<Void> cartuture = CompletableFuture.runAsync(() -> {
             //每一个线程都共享之前的数据
             RequestContextHolder.setRequestAttributes(requestAttributes);
             //2.远程查询购物车所有选中的购物项
             List<OrderItemVo> currentUserCartItems = cartFeignService.getCurrentUserCartItems();
             confirmVo.setItems(currentUserCartItems);
 
-        }, executor);
+        }, executor).thenRunAsync(()->{
+            //获取所有购物项
+            List<OrderItemVo> items = confirmVo.getItems();
+            if(!CollectionUtils.isEmpty(items)){
+                //获取所有商品id
+                List<Long> skuIds = items.stream().map(item -> item.getSkuId()).collect(Collectors.toList());
+                Result skusHasStock = wmsFeignService.getSkusHasStock(skuIds);
+                Object data = skusHasStock.get("data");
+                Gson gson=new Gson();
+                List<SkuStockVo> skuStockVos =gson.fromJson(data.toString(),new TypeToken<List<SkuStockVo>>(){}.getType());
+                if(!CollectionUtils.isEmpty(skuStockVos)){
+                    Map<Long, Boolean> map = skuStockVos.stream().collect(Collectors.toMap(SkuStockVo::getSkuId, SkuStockVo::getHasStock));
+                    confirmVo.setStocks(map);
+                }
+            }
+        },executor);
 
-        CompletableFuture.allOf(memberFuture,addressFuture,orderFuture).get();
+        CompletableFuture.allOf(memberFuture,addressFuture,cartuture).get();
 
 
 

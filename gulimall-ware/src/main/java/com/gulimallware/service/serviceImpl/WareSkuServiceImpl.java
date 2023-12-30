@@ -64,7 +64,13 @@ public class WareSkuServiceImpl implements WareSkuService{
     public List<SkusHasStockVo> getSkusHasStock(List<Long> skuIds) {
         List<SkusHasStockVo> stockVos = skuIds.stream().map(skuId -> {
             SkusHasStockVo vo = new SkusHasStockVo();
-            int count = wareSkuMapper.selectBySkuId(skuId);
+            int count;
+            //判断该商品是否有库存记录，如果没有库存记录设置count为0
+            if(null==wareSkuMapper.selectInfoBySkuId(skuId)){
+                count=0;
+            }else{
+                count=wareSkuMapper.selectBySkuId(skuId);
+            }
             Boolean bool=count >0 ?true:false;
             vo.setSkuId(skuId);
             vo.setHasStock(bool);

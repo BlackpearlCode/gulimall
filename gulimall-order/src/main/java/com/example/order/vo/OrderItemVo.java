@@ -22,4 +22,9 @@ public class OrderItemVo {
     private Integer count;
     //商品总价
     private BigDecimal totalPrice;
+    //是否有库存
+    private boolean hasStock;
+    //商品重量
+    private BigDecimal weight;
 }
+

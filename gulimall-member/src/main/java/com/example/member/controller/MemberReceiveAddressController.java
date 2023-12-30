@@ -2,6 +2,7 @@ package com.example.member.controller;
 
 import com.example.member.entity.MemberReceiveAddress;
 import com.example.member.service.MemberReceiveAddressService;
+import com.gulimall.common.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,5 +21,16 @@ public class MemberReceiveAddressController {
     @GetMapping("/{memberId}/getAddress")
     public List<MemberReceiveAddress> getAddress(@PathVariable("memberId") Long memberId){
         return memberReceiveAddressService.getAddress(memberId);
+    }
+
+    /**
+     * 根据id查询
+     * @param id
+     * @return
+     */
+    @GetMapping("/info/{id}")
+    public Result info(@PathVariable("id") Long id){
+        MemberReceiveAddress memberReceiveAddress = memberReceiveAddressService.selectByPrimaryKey(id);
+        return Result.ok().put("memberReceiveAddress",memberReceiveAddress);
     }
 }
