@@ -1,5 +1,1 @@
-gulimall:
-  pool:
-    core-pool-size: 20
-    max-pool-size: 200
-    keep-alive-time: 10
+
