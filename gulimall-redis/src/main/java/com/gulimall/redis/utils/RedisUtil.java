@@ -138,6 +138,17 @@ public final class RedisUtil {
     public<T> T deleteRedisLock(String script,List<String> keys,String value){
         return (T) writeTemplate().execute(new DefaultRedisScript<T>(script),keys,value);
     }
+    /**
+     * 执行lua脚本
+     * @param script：脚本
+     * @param keys：redis分布式锁对应的key
+     * @param value：redis分布式锁key对应的value
+     * @return
+     * @param <T>
+     */
+    public Long executeRedisLock(String script,List<String> keys,String value){
+        return (Long) writeTemplate().execute(new DefaultRedisScript<Long>(script, Long.class),keys,value);
+    }
 
     // ============================String=============================
 

@@ -110,10 +110,11 @@ public class WareSkuServiceImpl implements WareSkuService{
         }).collect(Collectors.toList());
         //2. 锁定库存
         for (SkuWareHasStock hasStock : collect) {
+
             Boolean skuStocked=false;
             Long skuId = hasStock.getSkuId();
             List<Long> wareIds = hasStock.getWareId();
-            if(CollectionUtils.isEmpty(collect)){
+            if(CollectionUtils.isEmpty(wareIds)){
                 //没有任何仓库有这个商品的库存
                 throw new NoStockException(skuId);
             }

@@ -15,7 +15,7 @@ public interface WmsFeignService {
     @GetMapping("ware/waresku/hasStock")
     public Result getSkusHasStock(@RequestBody List<Long> skuIds);
 
-    @GetMapping("ware/waresku/fare")
+    @GetMapping("ware/wareinfo/fare")
     public Result fare(@RequestParam("addrId") Long id);
 
     @PostMapping("ware/waresku/lock/order")

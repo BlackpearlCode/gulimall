@@ -27,6 +27,7 @@ public class OrderController {
 
     /**
      * 执行lua脚本
+     *
      * @param script
      * @param keys
      * @param value
@@ -34,7 +35,7 @@ public class OrderController {
      */
     @RequestMapping("/executeLua")
     public Long executeLua(@RequestParam("script") String script, @RequestParam("keys") List<String> keys, @RequestParam("value") String value){
-        return redisUtil.deleteRedisLock( script, keys, value);
+        return redisUtil.executeRedisLock( script, keys, value);
     }
 }
 

@@ -6,6 +6,7 @@ import com.example.order.entity.Order;
 import com.example.order.entity.OrderItem;
 import com.example.order.entity.OrderReturnReason;
 import com.example.order.enume.OrderStatusEnum;
+import com.example.order.exception.NoStockException;
 import com.example.order.feign.*;
 import com.example.order.interceptor.LoginUserInterceptor;
 import com.example.order.mapper.OrderMapper;
@@ -96,16 +97,31 @@ public class OrderServiceImpl implements OrderService{
     public OrderConfirmVo confirmOrder() throws ExecutionException, InterruptedException {
 
         OrderConfirmVo confirmVo=new OrderConfirmVo();
+        //获取用户信息
+        TokenInfo tokenInfo = LoginUserInterceptor.loginUser.get();
+        if(tokenInfo==null){
+            return null;
+        }
 
+        String memberId="";
+        if(!StringUtils.isEmpty(tokenInfo.getUserId())){
+            //如果用户是账号登录
+            memberId=tokenInfo.getUserId();
+        }else{
+            //如果用户是第三方登录，
+            memberId=tokenInfo.getSocialUid();
+        }
+        //查询用户信息
         //获取之前的请求
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        String finalMemberId = memberId;
         CompletableFuture<MemberVo> memberFuture = CompletableFuture.supplyAsync(() -> {
             //每一个线程都共享之前的数据
             RequestContextHolder.setRequestAttributes(requestAttributes);
-            //获取用户信息
-            MemberVo memberInfo = getMemberVo();
+
+            MemberVo memberInfo = memberFeignService.findMemberId(finalMemberId);
             //查询用户积分
-            Integer integration = memberInfo.getIntegration();
+            int integration = memberInfo.getIntegration() == null ? 0 : memberInfo.getIntegration();
             confirmVo.setIntegration(integration);
             //设置商品总数
             confirmVo.setCount(confirmVo.getCount());
@@ -113,10 +129,10 @@ public class OrderServiceImpl implements OrderService{
             confirmVo.setTotal(confirmVo.getTotal());
             //设置应付总价
             confirmVo.setPayPrice(confirmVo.getTotal());
-
            return memberInfo;
-        }, executor);
-
+        },executor);
+        System.out.println("memberFuture---->"+ memberFuture.get());
+        MemberVo memberVo = memberFuture.get();
         CompletableFuture<Void> addressFuture = memberFuture.thenAcceptAsync((res) -> {
             //每一个线程都共享之前的数据
             RequestContextHolder.setRequestAttributes(requestAttributes);
@@ -126,11 +142,15 @@ public class OrderServiceImpl implements OrderService{
         }, executor);
 
         CompletableFuture<Void> tokenFuture = memberFuture.thenAcceptAsync((res) -> {
+            //每一个线程都共享之前的数据
+            RequestContextHolder.setRequestAttributes(requestAttributes);
             //TODO 防重令牌
             String token = UUID.randomUUID().toString().replace("_", "");
             redisFeignService.saveToken(OrderConstant.USER_ORDER_TOKEN_PREFIX + res.getId(), token, 30 * 60);
             confirmVo.setOrderToken(token);
+
         }, executor);
+
 
         CompletableFuture<Void> cartuture = CompletableFuture.runAsync(() -> {
             //每一个线程都共享之前的数据
@@ -167,15 +187,30 @@ public class OrderServiceImpl implements OrderService{
     public SubmitOrderResponseVo submitOrder(OrderSubmitVo submitVo) {
         orderSubmitVoThreadLocal.set(submitVo);
         SubmitOrderResponseVo responseVo = new SubmitOrderResponseVo();
-        MemberVo memberInfo = getMemberVo();
+        //获取用户登录信息
+        TokenInfo tokenInfo = LoginUserInterceptor.loginUser.get();
+        if(tokenInfo==null){
+            return null;
+        }
+
+        String memberId="";
+        if(!StringUtils.isEmpty(tokenInfo.getUserId())){
+            //如果用户是账号登录
+            memberId=tokenInfo.getUserId();
+        }else{
+            //如果用户是第三方登录，
+            memberId=tokenInfo.getSocialUid();
+        }
+        //查询用户信息
+        MemberVo memberInfo = memberFeignService.findMemberId(memberId);
         responseVo.setCode(0);
         if (memberInfo == null) return null;
         //1.验证令牌【令牌的对比和删除必须保证原子性】
         //0:删除令牌失败；1：删除令牌成功
-        String script="if redis.call('get',KEYS[1])==ARGV[1] then return redis.call('del',KEYS[1]) else return 0 end";
+        String script="if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
         //原子验证令牌和删除令牌
         Long result = redisFeignService.executeLua(script, Arrays.asList(OrderConstant.USER_ORDER_TOKEN_PREFIX + memberInfo.getId()), submitVo.getOrderToken());
-        if(result!=1L){
+        if(result==0L){
             //令牌验证失败
             return responseVo;
         }
@@ -209,8 +244,8 @@ public class OrderServiceImpl implements OrderService{
                 return responseVo;
             }else{
                 //库存锁定失败
-                responseVo.setCode(5);
-                return responseVo;
+                responseVo.setCode(3);
+                throw new NoStockException();
             }
 
         }else{
@@ -219,30 +254,6 @@ public class OrderServiceImpl implements OrderService{
             return responseVo;
 
         }
-    }
-
-    /**
-     * 获取登录用户的信息
-     * @return
-     */
-    private MemberVo getMemberVo() {
-        //获取用户登录信息
-        TokenInfo tokenInfo = LoginUserInterceptor.loginUser.get();
-        if(tokenInfo==null){
-            return null;
-        }
-
-        String memberId="";
-        if(!StringUtils.isEmpty(tokenInfo.getUserId())){
-            //如果用户是账号登录
-            memberId=tokenInfo.getUserId();
-        }else{
-            //如果用户是第三方登录，
-            memberId=tokenInfo.getSocialUid();
-        }
-        //查询用户信息
-        MemberVo memberInfo = memberFeignService.findMemberId(memberId);
-        return memberInfo;
     }
 
     /**
@@ -288,6 +299,8 @@ public class OrderServiceImpl implements OrderService{
         List<OrderItem> orderItems = buildOrderItems(orderSn);
         //计算价格
         computePrice(order,orderItems);
+        orderCreateTo.setOrder(order);
+        orderCreateTo.setItems(orderItems);
         return orderCreateTo;
     }
 
@@ -300,16 +313,16 @@ public class OrderServiceImpl implements OrderService{
         BigDecimal growth = new BigDecimal("0.0");
         //订单总额：叠加每一个订单项的总额信息
         for (OrderItem orderItem : orderItems) {
-            coupon=coupon.add(orderItem.getCouponAmount());
-            integration=integration.add( orderItem.getIntegrationAmount());
-            promotion=promotion.add(orderItem.getPromotionAmount());
-            total=total.add(orderItem.getRealAmount());
-            gift=gift.add(new BigDecimal(orderItem.getGiftIntegration()));
-            growth=growth.add(new BigDecimal(orderItem.getGiftGrowth()));
+            coupon=coupon.add(orderItem.getCouponAmount()==null?new BigDecimal("0.0"):orderItem.getCouponAmount());
+            integration=integration.add( orderItem.getIntegrationAmount()==null?new BigDecimal("0.0"):orderItem.getIntegrationAmount());
+            promotion=promotion.add(orderItem.getPromotionAmount()==null?new BigDecimal("0.0"):orderItem.getPromotionAmount());
+            total=total.add(orderItem.getRealAmount()==null?new BigDecimal("0.0"):orderItem.getRealAmount());
+            gift=gift.add(orderItem.getGiftIntegration()==null?new BigDecimal("0.0"): BigDecimal.valueOf(orderItem.getGiftIntegration()));
+            growth=growth.add(orderItem.getGiftGrowth()==null?new BigDecimal("0.0"): BigDecimal.valueOf(orderItem.getGiftGrowth()));
         }
         //1.订单价格相关信息
         order.setTotalAmount(total);
-        //设置应付总额
+        //设置应付总额(应付总额=订单总额+运费)
         order.setPayAmount(total.add(order.getFreightAmount()));
         //设置促销优化金额（促销价、满减、阶梯价）
         order.setPromotionAmount(promotion);
@@ -335,8 +348,22 @@ public class OrderServiceImpl implements OrderService{
         Order order = new Order();
         //创建订单号
         order.setOrderSn(orderSn);
-        MemberVo memberVo = getMemberVo();
-        order.setMemberId(memberVo.getId());
+        TokenInfo tokenInfo = LoginUserInterceptor.loginUser.get();
+        if(tokenInfo==null){
+            return null;
+        }
+
+        String memberId="";
+        if(!StringUtils.isEmpty(tokenInfo.getUserId())){
+            //如果用户是账号登录
+            memberId=tokenInfo.getUserId();
+        }else{
+            //如果用户是第三方登录，
+            memberId=tokenInfo.getSocialUid();
+        }
+        //查询用户信息
+        MemberVo memberInfo = memberFeignService.findMemberId(memberId);
+        order.setMemberId(memberInfo.getId());
         //获取收获地址信息
         OrderSubmitVo orderSubmitVo = orderSubmitVoThreadLocal.get();
         Result fare = wmsFeignService.fare(orderSubmitVo.getAddrId());
@@ -373,10 +400,10 @@ public class OrderServiceImpl implements OrderService{
         List<OrderItemVo> currentUserCartItems = cartFeignService.getCurrentUserCartItems();
         if(!CollectionUtils.isEmpty(currentUserCartItems)){
             List<OrderItem> orderItems = currentUserCartItems.stream().map(cartItem -> {
-                OrderItem orderItem = new OrderItem();
+
                 OrderItem itemEntity = buildOrderItem(cartItem);
                 itemEntity.setOrderSn(orderSn);
-                return orderItem;
+                return itemEntity;
             }).collect(Collectors.toList());
             return orderItems;
         }
@@ -396,7 +423,7 @@ public class OrderServiceImpl implements OrderService{
         Result result = productFeignService.getSpuInfoBySkuId(skuId);
         Object data = result.get("data");
         Gson gson=new Gson();
-        SpuInfoVo spuInfoVo = gson.fromJson(data.toString(), SpuInfoVo.class);
+        SpuInfoVo spuInfoVo = gson.fromJson(gson.toJson(data), SpuInfoVo.class);
         orderItem.setSpuId(spuInfoVo.getId());
         orderItem.setSpuBrand(spuInfoVo.getBrandId().toString());
         orderItem.setSpuName(spuInfoVo.getSpuName());
