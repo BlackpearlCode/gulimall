@@ -13,7 +13,7 @@ import java.util.Map;
 
 @RequestMapping("product/spuinfo")
 @RestController
-public class SpuSaveController {
+public class SpuInfoController {
 
     @Autowired
     private PmsSpuInfoServiceImpl spuInfoService;
@@ -44,5 +44,16 @@ public class SpuSaveController {
     public Result update(@PathVariable("id")Long id){
         spuInfoService.up(id);
         return Result.r(BizCodeEnum.OK.getCode(),BizCodeEnum.OK.getMsg());
+    }
+
+    /**
+     * 根据skuId获取spu信息
+     * @param id
+     * @return
+     */
+    @GetMapping("/skuId/{id}")
+    public Result getSpuInfoBySkuId(@PathVariable("id") Long id){
+        PmsSpuInfo spuInfo =spuInfoService.getSpuInfoBySkuId(id);
+        return Result.r(BizCodeEnum.OK.getCode(),BizCodeEnum.OK.getMsg()).setData(spuInfo);
     }
 }

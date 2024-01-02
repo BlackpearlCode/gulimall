@@ -187,4 +187,8 @@
   <select id="selectBySpuId" resultMap="BaseResultMap">
     select * from pms_sku_info where spu_id=#{spuId,jdbcType=BIGINT}
   </select>
+
+  <select id="getSkuInfoBySkuId" resultMap="BaseResultMap">
+    select * from pms_sku_info where sku_id = #{skuId,jdbcType=BIGINT}
+    </select>
 </mapper>

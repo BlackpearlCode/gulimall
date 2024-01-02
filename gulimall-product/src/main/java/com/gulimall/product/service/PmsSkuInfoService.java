@@ -31,8 +31,12 @@ public interface PmsSkuInfoService{
 
     List<PmsSkuInfo> selectBySpuId(Long spuId);
 
-
+    // 获取sku的详情信息
     SkuItemVo item(Long skuId) throws ExecutionException, InterruptedException;
 
+    // 获取spu的销售属性
     List<String> getSkuSaleAtttrValues(Long skuId);
+
+    // 根据skuId获取sku信息
+    PmsSkuInfo getSkuInfoBySkuId(Long skuId);
 }

@@ -29,4 +29,8 @@ public interface WareSkuMapper {
     int selectBySkuId(Long skuId);
 
     WareSku selectInfoBySkuId(Long skuId);
+
+    List<Long> listWareIdHasStock(Long skuId);
+
+    Long lockStock(@Param("skuId") Long skuId,@Param("wareId") Long wareId,@Param("num") Integer num);
 }

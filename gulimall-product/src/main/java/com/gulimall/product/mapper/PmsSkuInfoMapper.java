@@ -25,4 +25,6 @@ public interface PmsSkuInfoMapper {
     List<PmsSkuInfo> getInfo(@Param("params") Map<String, Object> params);
 
     List<PmsSkuInfo> selectBySpuId(Long spuId);
+
+    PmsSkuInfo getSkuInfoBySkuId(Long skuId);
 }

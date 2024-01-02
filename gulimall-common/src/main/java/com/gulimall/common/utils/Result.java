@@ -17,7 +17,7 @@ public class Result<T> extends HashMap<String, Object> {
         return error;
     }
 
-    private static Result error(int code, String msg) {
+    public static Result error(int code, String msg) {
         Result error = new Result();
         error.put("code", code);
         error.put("msg", msg);

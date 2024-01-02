@@ -26,4 +26,7 @@ public interface PmsSpuInfoService{
     PageEntity getAll(Map<String, Object>params);
 
     void up(Long id);
+
+    // 根据skuId获取spu信息
+    PmsSpuInfo getSpuInfoBySkuId(Long skuId);
 }

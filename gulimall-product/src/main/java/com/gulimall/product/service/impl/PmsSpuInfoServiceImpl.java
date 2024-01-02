@@ -215,4 +215,12 @@ public class PmsSpuInfoServiceImpl implements PmsSpuInfoService {
             //远程调用失败
         }
     }
+
+    @Override
+    public PmsSpuInfo getSpuInfoBySkuId(Long skuId) {
+        //根据id获取spuId
+        PmsSkuInfo skuInfo=pmsSkuInfoService.getSkuInfoBySkuId(skuId);
+        PmsSpuInfo spuInfo=pmsSpuInfoMapper.selectByPrimaryKey(skuInfo.getSpuId());
+        return spuInfo;
+    }
 }

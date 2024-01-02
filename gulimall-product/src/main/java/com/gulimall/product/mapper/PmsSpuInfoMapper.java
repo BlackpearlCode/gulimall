@@ -24,4 +24,7 @@ public interface PmsSpuInfoMapper {
     int updateByPrimaryKey(PmsSpuInfo record);
 
     List<PmsSpuInfo> getAll(@Param("params") Map<String, Object> params);
+
+
+
 }
